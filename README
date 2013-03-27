@@ -1,0 +1,26 @@
+NAME
+    Lingua::Stem::Any - ...
+
+VERSION
+    This document describes Lingua::Stem::Any version 0.00_1.
+
+SYNOPSIS
+        use Lingua::Stem::Any;
+
+        ...
+
+DESCRIPTION
+    ...
+
+SEE ALSO
+    *   ...
+
+AUTHOR
+    Nick Patch <patch@cpan.org>
+
+COPYRIGHT AND LICENSE
+    © 2013 Nick Patch
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
