@@ -15,7 +15,7 @@ __END__
 
 =head1 NAME
 
-Lingua::Stem::Any - ...
+Lingua::Stem::Any - consistent interface to any stemmer on CPAN
 
 =head1 VERSION
 
@@ -25,19 +25,60 @@ This document describes Lingua::Stem::Any v0.00_1.
 
     use Lingua::Stem::Any;
 
-    ...
+    # German stemmer using the default source module
+    $stemmer = Lingua::Stem::Any->new(language => 'de');
+
+    # German stemmer explicitly using Lingua::Stem::Snowball
+    $stemmer = Lingua::Stem::Any->new(language => 'de', source => 'snowball');
+
+    # stem a single word
+    $stem = $stemmer->stem($word);
+
+    # stem a list of words
+    @stems = $stemmer->stem(@stems);
+
+    # stem the contents of an array reference in place
+    $stemmer->stem(\@stems);
 
 =head1 DESCRIPTION
 
-...
-
-=head1 SEE ALSO
-
 =over
 
-=item * ...
+=item * simple interface
+
+=item * unifies all stemmers
+
+=item * sane defaults
+
+=item * input and output character strings
 
 =back
+
+=head2 Sources
+
+The first source listed for a language is the default.
+
+    Arabic      ar  Lingua::AR::Word
+    Bulgarian   bg  Lingua::Stem::UniNE
+    Czech       cs  Lingua::Stem::UniNE
+    Danish      da  Lingua::Stem::Snowball, Lingua::Stem::Snowball::Da
+    Dutch       nl  Lingua::Stem::Snowball
+    English     en  Lingua::Stem::Snowball, Lingua::Stem::En, SWISH::Stemmer
+    Finnish     fi  Lingua::Stem::Snowball
+    French      fr  Lingua::Stem::Snowball, Lingua::Stem::Fr
+    Galician    gl  Lingua::GL::Stemmer
+    German      de  Lingua::Stem::Snowball, Text::German
+    Hungarian   hu  Lingua::Stem::Snowball
+    Italian     it  Lingua::Stem::Snowball, Lingua::Stem::It
+    Latin       la  Lingua::LA::Stemmer
+    Norwegian   no  Lingua::Stem::Snowball, Lingua::Stem::Snowball::No
+    Persian     FA  Lingua::Stem::UniNE
+    Portuguese  pt  Lingua::Stem::Snowball, Lingua::PT::Stemmer
+    Romanian    ro  Lingua::Stem::Snowball
+    Russian     ru  Lingua::Stem::Snowball, Lingua::Stem::Ru
+    Spanish     es  Lingua::Stem::Snowball, Lingua::Stem::Es
+    Swedish     sv  Lingua::Stem::Snowball, Lingua::Stem::Snowball::Se
+    Turkish     tr  Lingua::Stem::Snowball
 
 =head1 AUTHOR
 
