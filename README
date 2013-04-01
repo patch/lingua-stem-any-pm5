@@ -2,7 +2,7 @@ NAME
     Lingua::Stem::Any - ...
 
 VERSION
-    This document describes Lingua::Stem::Any version 0.00_1.
+    This document describes Lingua::Stem::Any v0.00_1.
 
 SYNOPSIS
         use Lingua::Stem::Any;

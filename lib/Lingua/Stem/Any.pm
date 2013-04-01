@@ -1,9 +1,9 @@
 package Lingua::Stem::Any;
 
 use v5.6;
+use utf8;
 use strict;
 use warnings;
-use utf8;
 
 our $VERSION = '0.00_1';
 
@@ -19,7 +19,7 @@ Lingua::Stem::Any - ...
 
 =head1 VERSION
 
-This document describes Lingua::Stem::Any version 0.00_1.
+This document describes Lingua::Stem::Any v0.00_1.
 
 =head1 SYNOPSIS
 

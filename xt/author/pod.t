@@ -1,6 +1,6 @@
+use utf8;
 use strict;
 use warnings;
-use utf8;
 use Test::More;
 
 eval 'use Test::Pod 1.00';
