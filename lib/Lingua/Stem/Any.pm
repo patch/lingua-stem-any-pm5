@@ -25,20 +25,38 @@ This document describes Lingua::Stem::Any v0.00_1.
 
     use Lingua::Stem::Any;
 
-    # German stemmer using the default source module
+    # create German stemmer using the default source module
     $stemmer = Lingua::Stem::Any->new(language => 'de');
 
-    # German stemmer explicitly using Lingua::Stem::Snowball
+    # create German stemmer explicitly using Lingua::Stem::Snowball
     $stemmer = Lingua::Stem::Any->new(language => 'de', source => 'snowball');
 
-    # stem a single word
+    # get stem for a word
     $stem = $stemmer->stem($word);
 
-    # stem a list of words
+    # get list of stems for a list of words
     @stems = $stemmer->stem(@stems);
 
-    # stem the contents of an array reference in place
+    # replace words in array reference with stems
     $stemmer->stem(\@stems);
+
+	# get supported languages
+    @languages = $stemmer->languages;
+
+	# get current language
+    $language = $stemmer->language;
+
+	# change language to Dutch
+    $stemmer->language('nl');
+
+	# get supported sources for the current language
+    @sources = $stemmer->sources;
+
+	# get current source
+    $source = $stemmer->source;
+
+	# change source to Lingua::Stem::UniNE
+    $stemmer->source('unine');
 
 =head1 DESCRIPTION
 
