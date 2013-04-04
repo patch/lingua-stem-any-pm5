@@ -6,6 +6,7 @@ LICENSE
 MANIFEST			This list of files
 README
 t/00-load.t
+t/stemmer.t
 xt/author/changes.t
 xt/author/kwalitee.t
 xt/author/pod-coverage.t
