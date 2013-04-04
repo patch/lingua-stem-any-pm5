@@ -27,14 +27,71 @@ This document describes Lingua::Stem::Any v0.00_1.
     # replace words in array reference with stems
     $stemmer->stem(\@words);
 
-    # get supported languages
-    @languages = $stemmer->languages;
+=head1 DESCRIPTION
+
+This module aims to provide a simple unified interface to any stemmer on CPAN.
+It will provide a default available source module when a language is requested
+and no specific source is requested.
+
+=head2 Attributes
+
+=over
+
+=item language
+
+The following language codes are currently supported.
+
+    ┌────────────┬────┐
+    │ Bulgarian  │ bg │
+    │ Czech      │ cs │
+    │ Danish     │ da │
+    │ Dutch      │ nl │
+    │ English    │ en │
+    │ Finnish    │ fi │
+    │ French     │ fr │
+    │ German     │ de │
+    │ Hungarian  │ hu │
+    │ Italian    │ it │
+    │ Norwegian  │ no │
+    │ Persian    │ fa │
+    │ Portuguese │ pt │
+    │ Romanian   │ ro │
+    │ Russian    │ ru │
+    │ Spanish    │ es │
+    │ Swedish    │ sv │
+    │ Turkish    │ tr │
+    └────────────┴────┘
+
+They are in the two-letter ISO 639-1 format and are case-insensitive but are
+always returned in lowercase when requested.
+
+    # instantiate a stemmer object
+    $stemmer = Lingua::Stem::Any->new(language => $language);
 
     # get current language
     $language = $stemmer->language;
 
-    # change language to Dutch
-    $stemmer->language('nl');
+    # change language
+    $stemmer->language($language);
+
+Country codes such as C<cz> for the Czech Republic are not supported, nor are
+IETF language tags such as C<pt-PT> or C<pt-BR>.
+
+=item source
+
+The following source modules are currently supported.
+
+    ┌────────────────────────┬──────────┬──────────────────────────────────────────────┐
+    │ Module                 │ Alias    │ Languages                                    │
+    ├────────────────────────┼──────────┼──────────────────────────────────────────────┤
+    │ Lingua::Stem::Snowball │ snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
+    │ Lingua::Stem::UniNE    │ unine    │ bg cs fa                                     │
+    └────────────────────────┴──────────┴──────────────────────────────────────────────┘
+
+The full module name or the listed alias can be used to specify the source.  If
+no source is specified, the first available source in the list that supports the
+specified language is used.  The full module names are case sensitive and the
+aliases are case insensitive.
 
     # get supported sources for the current language
     @sources = $stemmer->sources;
@@ -45,47 +102,45 @@ This document describes Lingua::Stem::Any v0.00_1.
     # change source to Lingua::Stem::UniNE
     $stemmer->source('unine');
 
-=head1 DESCRIPTION
+=back
+
+=head2 Methods
 
 =over
 
-=item * simple interface
+=item stem
 
-=item * unifies all stemmers
+When a list of strings is provided, each string is stemmed and a list of stems
+is returned.  The list returned will always have the same number of elements in
+the same order as the list provided.
 
-=item * sane defaults
+    @stems = $stemmer->stem(@words);
 
-=item * input and output character strings
+    # get the stem for a single word
+    $stem = $stemmer->stem($word);
+
+When an array reference is provided, each element is stemmed and replaced with
+the resulting stem.
+
+    $stemmer->stem(\@words);
+
+The words should be provided as character strings and the stems are returned as
+character strings.  Byte strings in arbitrary character encodings are not
+supported.
+
+=item languages
+
+Returns a list of supported two-letter language codes using lowercase letters.
+
+    # object method
+    @languages = $stemmer->languages;
+
+    # class method
+    @languages = Lingua::Stem::UniNE->languages;
+
+In scalar context it returns the number of supported languages.
 
 =back
-
-=head2 Sources
-
-The first source listed for a language is the default.
-
-    ┌────────────┬────┬──────────────────────────────────────────────────────────┐
-    │ Arabic     │ ar │ Lingua::AR::Word                                         │
-    │ Bulgarian  │ bg │ Lingua::Stem::UniNE                                      │
-    │ Czech      │ cs │ Lingua::Stem::UniNE                                      │
-    │ Danish     │ da │ Lingua::Stem::Snowball, Lingua::Stem::Snowball::Da       │
-    │ Dutch      │ nl │ Lingua::Stem::Snowball                                   │
-    │ English    │ en │ Lingua::Stem::Snowball, Lingua::Stem::En, SWISH::Stemmer │
-    │ Finnish    │ fi │ Lingua::Stem::Snowball                                   │
-    │ French     │ fr │ Lingua::Stem::Snowball, Lingua::Stem::Fr                 │
-    │ Galician   │ gl │ Lingua::GL::Stemmer                                      │
-    │ German     │ de │ Lingua::Stem::Snowball, Text::German                     │
-    │ Hungarian  │ hu │ Lingua::Stem::Snowball                                   │
-    │ Italian    │ it │ Lingua::Stem::Snowball, Lingua::Stem::It                 │
-    │ Latin      │ la │ Lingua::LA::Stemmer                                      │
-    │ Norwegian  │ no │ Lingua::Stem::Snowball, Lingua::Stem::Snowball::No       │
-    │ Persian    │ fa │ Lingua::Stem::UniNE                                      │
-    │ Portuguese │ pt │ Lingua::Stem::Snowball, Lingua::PT::Stemmer              │
-    │ Romanian   │ ro │ Lingua::Stem::Snowball                                   │
-    │ Russian    │ ru │ Lingua::Stem::Snowball, Lingua::Stem::Ru                 │
-    │ Spanish    │ es │ Lingua::Stem::Snowball, Lingua::Stem::Es                 │
-    │ Swedish    │ sv │ Lingua::Stem::Snowball, Lingua::Stem::Snowball::Se       │
-    │ Turkish    │ tr │ Lingua::Stem::Snowball                                   │
-    └────────────┴────┴──────────────────────────────────────────────────────────┘
 
 =head1 ACKNOWLEDGEMENTS
 
