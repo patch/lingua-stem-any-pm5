@@ -2,6 +2,7 @@ Build.PL
 Changes
 INSTALL
 lib/Lingua/Stem/Any.pm
+LICENSE
 MANIFEST			This list of files
 README
 t/00-load.t

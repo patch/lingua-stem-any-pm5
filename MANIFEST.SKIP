@@ -16,3 +16,8 @@
 
 # Avoid files from the repository not intended for distribution
 ^README.pod$
+
+# Avoid other random files
+^Debian_CPANTS.txt$
+.tar.gz$
+.zip$
