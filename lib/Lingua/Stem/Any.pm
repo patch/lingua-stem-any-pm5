@@ -5,7 +5,7 @@ use utf8;
 use Moo;
 use List::Util qw( first );
 
-our $VERSION = '0.00_1';
+our $VERSION = '0.01';
 
 my %sources = (
     'Lingua::Stem::Snowball' => {
@@ -128,7 +128,7 @@ Lingua::Stem::Any - Consistent interface to any stemmer on CPAN
 
 =head1 VERSION
 
-This document describes Lingua::Stem::Any v0.00_1.
+This document describes Lingua::Stem::Any v0.01.
 
 =head1 SYNOPSIS
 
@@ -215,13 +215,13 @@ The following source modules are currently supported.
 
 A module name is used to specify the source.  If no source is specified, the
 first available source in the above list with support for the current language
-is used.  The source names are case sensitive.
+is used.
 
     # get current source
     $source = $stemmer->source;
 
-    # change source to Lingua::Stem::UniNE
-    $stemmer->source('unine');
+    # change source
+    $stemmer->source('Lingua::Stem::UniNE');
 
 =back
 
@@ -259,9 +259,21 @@ Returns a list of supported two-letter language codes using lowercase letters.
     # class method
     @languages = Lingua::Stem::UniNE->languages;
 
-In scalar context it returns the number of supported languages.
+=item sources
+
+Returns a list of supported source module names.
+
+    # object method
+    @languages = $stemmer->sources;
+
+    # class method
+    @languages = Lingua::Stem::UniNE->sources;
 
 =back
+
+=head1 SEE ALSO
+
+L<Lingua::Stem::Snowball>, L<Lingua::Stem::UniNE>, L<Lingua::Stem>
 
 =head1 ACKNOWLEDGEMENTS
 

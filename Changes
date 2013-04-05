@@ -1,4 +1,5 @@
 Revision history for Perl module Lingua::Stem::Any
 
-0.00_1 XXX
+0.01 XXX
  - First release
+ - Sources supported: Lingua::Stem::Snowball, Lingua::Stem::UniNE

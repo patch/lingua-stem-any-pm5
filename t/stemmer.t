@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 45;
+use Test::More tests => 51;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -21,6 +21,15 @@ is_deeply [Lingua::Stem::Any::languages], \@langs, 'function list';
 is scalar $stemmer->languages,             $langs, 'object method scalar';
 is scalar Lingua::Stem::Any->languages,    $langs, 'class method scalar';
 is scalar Lingua::Stem::Any::languages,    $langs, 'function scalar';
+
+my @sources = qw( Lingua::Stem::Snowball Lingua::Stem::UniNE );
+my $sources = @sources;
+is_deeply [$stemmer->sources],          \@sources, 'object method list';
+is_deeply [Lingua::Stem::Any->sources], \@sources, 'class method list';
+is_deeply [Lingua::Stem::Any::sources], \@sources, 'function list';
+is scalar $stemmer->sources,             $sources, 'object method scalar';
+is scalar Lingua::Stem::Any->sources,    $sources, 'class method scalar';
+is scalar Lingua::Stem::Any::sources,    $sources, 'function scalar';
 
 @words = @words_copy = qw( že dobře ještě );
 is_deeply [$stemmer->stem(@words)], [qw( že dobř jesk )], 'list of words';
