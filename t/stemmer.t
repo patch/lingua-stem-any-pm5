@@ -2,12 +2,12 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 27;
+use Test::More tests => 45;
 use Lingua::Stem::Any;
 
-my (@words, @words_copy);
+my ($stemmer, @words, @words_copy);
 
-my $stemmer = new_ok 'Lingua::Stem::Any', [language => 'cs'];
+$stemmer = new_ok 'Lingua::Stem::Any', [language => 'cs'];
 
 can_ok $stemmer, qw( stem language languages source );
 
@@ -60,3 +60,42 @@ like $@, qr/Invalid language 'xx'/, 'invalid language via instantiator';
 
 eval { Lingua::Stem::Any->new() };
 like $@, qr/Missing required arguments: language/, 'instantiator w/o language';
+
+$stemmer = new_ok 'Lingua::Stem::Any', [
+    language => 'de',
+    source   => 'Lingua::Stem::Snowball',
+], 'new stemmer using Snowball';
+
+@words = @words_copy = qw( sähet singen );
+is_deeply [$stemmer->stem(@words)], [qw( sahet sing )], 'list of words';
+is_deeply \@words, \@words_copy, 'not destructive on arrays';
+
+$stemmer->stem(\@words);
+is_deeply \@words, [qw( sahet sing )], 'arrayref modified in place';
+
+is_deeply scalar $stemmer->stem(@words), 'sing', 'list of words in scalar';
+
+is_deeply [$stemmer->stem('bekämen')], ['bekam'], 'word in list context';
+is_deeply [$stemmer->stem()],          [],        'empty list in list context';
+is scalar $stemmer->stem('bekämen'),   'bekam',   'word in scalar context';
+is scalar $stemmer->stem(),            undef,     'empty list in scalar context';
+
+$stemmer->language('bg');
+is $stemmer->language, 'bg',                  'lang changed via write-accessor';
+is $stemmer->source,   'Lingua::Stem::UniNE', 'source changed to match language';
+is $stemmer->stem('работа'), 'раб', 'language change confirmed by stemming';
+
+$stemmer->source('Lingua::Stem::UniNE');
+is $stemmer->source, 'Lingua::Stem::UniNE', 'updating source to itself is noop';
+
+eval { $stemmer->source('Lingua::Stem::Snowball') };
+like $@, qr/Invalid source 'Lingua::Stem::Snowball' for language 'bg'/,
+    'invalid source for current language';
+
+eval { $stemmer->source('Acme::Buffy') };
+like $@, qr/Invalid source 'Acme::Buffy'/, 'invalid source via write-accessor';
+
+$stemmer->language('tr');
+is $stemmer->language, 'tr',                     'lang changed via write-accessor';
+is $stemmer->source,   'Lingua::Stem::Snowball', 'source changed to match language';
+is $stemmer->stem('değilken'), 'değil', 'language change confirmed by stemming';

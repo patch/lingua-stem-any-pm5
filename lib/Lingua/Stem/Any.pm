@@ -12,7 +12,15 @@ my %sources = (
         languages => {map { $_ => 1 } qw(
             da de en es fi fr hu it nl no pt ro ru sv tr
         )},
-        instantiator => sub {},
+        stemmer => sub {
+            my ($language) = @_;
+            require Lingua::Stem::Snowball;
+            my $stemmer = Lingua::Stem::Snowball->new(
+                lang     => $language,
+                encoding => 'UTF-8',
+            );
+            return sub { $stemmer->stem($_[0]) };
+        },
     },
     'Lingua::Stem::UniNE' => {
         languages => {map { $_ => 1 } qw(
@@ -39,8 +47,9 @@ has language => (
 );
 
 has source => (
-    is  => 'rw',
-    isa => sub { die "Invalid source '$_[0]'" if !$sources{$_[0]} },
+    is      => 'rw',
+    isa     => sub { die "Invalid source '$_[0]'" if !$sources{$_[0]} },
+    trigger => 1,
 );
 
 has _stemmer => (
@@ -59,6 +68,13 @@ sub _trigger_language {
     $self->_stemmer(
         $sources{$self->source}{stemmer}->($self->language)
     );
+}
+
+sub _trigger_source {
+    my $self = shift;
+
+    die "Invalid source '$_[0]' for language '", $self->language, "'"
+        unless $sources{$_[0]}{languages}{$self->language};
 }
 
 sub languages {
