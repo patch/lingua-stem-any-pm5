@@ -2,10 +2,112 @@ package Lingua::Stem::Any;
 
 use v5.6;
 use utf8;
-use strict;
-use warnings;
+use Moo;
 
 our $VERSION = '0.00_1';
+
+my %sources = (
+    'Lingua::Stem::Snowball' => {
+        languages => {map { $_ => 1 } qw(
+            da de en es fi fr hu it nl no pt ro ru sv tr
+        )},
+        instantiator => sub {},
+    },
+    'Lingua::Stem::UniNE' => {
+        languages => {map { $_ => 1 } qw(
+            bg cs fa
+        )},
+        instantiator => sub {
+            my ($language) = @_;
+            require Lingua::Stem::UniNE;
+            return Lingua::Stem::UniNE->new(language => $language);
+        },
+        stemmer => sub {
+            my ($object, $word) = shift;
+            return $object->stem($word);
+        },
+    },
+);
+my @source_order = qw( Lingua::Stem::Snowball Lingua::Stem::UniNE );
+my %is_language  = map { %{$_->{languages}} } values %sources;
+my @languages    = sort keys %is_language;
+
+has language => (
+    is       => 'rw',
+    isa      => sub { die "Invalid language '$_[0]'" if !$is_language{$_[0]} },
+    coerce   => sub { defined $_[0] ? lc $_[0] : '' },
+    trigger  => 1,
+    required => 1,
+);
+
+has source => (
+    is       => 'rw',
+    isa      => sub { die "Invalid source '$_[0]'" if !$sources{$_[0]} },
+    trigger  => 1,
+);
+
+has _object => (
+    is => 'rw',
+);
+
+has _stemmer => (
+    is => 'rw',
+);
+
+sub _trigger_language {
+    my $self = shift;
+
+    if ($self->source) {
+        die "Invalid source for language"
+            unless $sources{$self->source}{languages}{$self->language};
+
+        $self->_object(
+            $sources{$self->source}{instantiator}->($self->language)
+        );
+
+        $self->_stemmer(
+            $sources{$self->source}{stemmer}
+        );
+    }
+    else {
+        for my $source (@source_order) {
+            next unless $sources{$source}{languages}{$self->language};
+
+            $self->_object(
+                $sources{$source}{instantiator}->($self->language)
+            );
+
+            $self->_stemmer(
+                $sources{$source}{stemmer}
+            );
+
+            last;
+        }
+    }
+}
+
+sub languages {
+    return @languages;
+}
+
+sub sources {
+    return @source_order;
+}
+
+sub stem {
+    my $self = shift;
+
+    if (@_ == 1 && ref $_[0] eq 'ARRAY') {
+        for my $word ( @{$_[0]} ) {
+            $word = $self->_stemmer->($self->_object, $word);
+        }
+        return;
+    }
+    else {
+        my @stems = map { $self->_stemmer->($self->_object, $_) } @_;
+        return wantarray ? @stems : pop @stems;
+    }
+}
 
 1;
 

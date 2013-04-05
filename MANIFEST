@@ -4,6 +4,8 @@ INSTALL
 lib/Lingua/Stem/Any.pm
 LICENSE
 MANIFEST			This list of files
+META.json
+META.yml
 README
 t/00-load.t
 t/stemmer.t
