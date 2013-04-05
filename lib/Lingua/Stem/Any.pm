@@ -3,6 +3,7 @@ package Lingua::Stem::Any;
 use v5.6;
 use utf8;
 use Moo;
+use List::Util qw( first );
 
 our $VERSION = '0.00_1';
 
@@ -17,14 +18,11 @@ my %sources = (
         languages => {map { $_ => 1 } qw(
             bg cs fa
         )},
-        instantiator => sub {
+        stemmer => sub {
             my ($language) = @_;
             require Lingua::Stem::UniNE;
-            return Lingua::Stem::UniNE->new(language => $language);
-        },
-        stemmer => sub {
-            my ($object, $word) = shift;
-            return $object->stem($word);
+            my $stemmer = Lingua::Stem::UniNE->new(language => $language);
+            return sub { $stemmer->stem($_[0]) };
         },
     },
 );
@@ -41,13 +39,8 @@ has language => (
 );
 
 has source => (
-    is       => 'rw',
-    isa      => sub { die "Invalid source '$_[0]'" if !$sources{$_[0]} },
-    trigger  => 1,
-);
-
-has _object => (
-    is => 'rw',
+    is  => 'rw',
+    isa => sub { die "Invalid source '$_[0]'" if !$sources{$_[0]} },
 );
 
 has _stemmer => (
@@ -57,33 +50,15 @@ has _stemmer => (
 sub _trigger_language {
     my $self = shift;
 
-    if ($self->source) {
-        die "Invalid source for language"
-            unless $sources{$self->source}{languages}{$self->language};
-
-        $self->_object(
-            $sources{$self->source}{instantiator}->($self->language)
-        );
-
-        $self->_stemmer(
-            $sources{$self->source}{stemmer}
+    if (!$self->source || !$sources{$self->source}{languages}{$self->language}) {
+        $self->source(
+            first { $sources{$_}{languages}{$self->language} } @source_order
         );
     }
-    else {
-        for my $source (@source_order) {
-            next unless $sources{$source}{languages}{$self->language};
 
-            $self->_object(
-                $sources{$source}{instantiator}->($self->language)
-            );
-
-            $self->_stemmer(
-                $sources{$source}{stemmer}
-            );
-
-            last;
-        }
-    }
+    $self->_stemmer(
+        $sources{$self->source}{stemmer}->($self->language)
+    );
 }
 
 sub languages {
@@ -99,12 +74,12 @@ sub stem {
 
     if (@_ == 1 && ref $_[0] eq 'ARRAY') {
         for my $word ( @{$_[0]} ) {
-            $word = $self->_stemmer->($self->_object, $word);
+            $word = $self->_stemmer->($word);
         }
         return;
     }
     else {
-        my @stems = map { $self->_stemmer->($self->_object, $_) } @_;
+        my @stems = map { $self->_stemmer->($_) } @_;
         return wantarray ? @stems : pop @stems;
     }
 }

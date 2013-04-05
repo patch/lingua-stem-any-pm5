@@ -19,6 +19,7 @@ my $builder = Module::Build->new(
         'warnings'               => 0,
         'Lingua::Stem::Snowball' => 0,
         'Lingua::Stem::UniNE'    => 0,
+        'List::Util'             => 0,
         'Moo'                    => 1.000000,
     },
     meta_merge => {
