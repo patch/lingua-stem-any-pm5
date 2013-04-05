@@ -88,7 +88,8 @@ is $stemmer->stem('работа'), 'раб', 'language change confirmed by stemm
 $stemmer->source('Lingua::Stem::UniNE');
 is $stemmer->source, 'Lingua::Stem::UniNE', 'updating source to itself is noop';
 
-eval { $stemmer->source('Lingua::Stem::Snowball') };
+$stemmer->source('Lingua::Stem::Snowball');
+eval { $stemmer->stem('работа') };
 like $@, qr/Invalid source 'Lingua::Stem::Snowball' for language 'bg'/,
     'invalid source for current language';
 

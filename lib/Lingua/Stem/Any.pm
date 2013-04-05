@@ -34,6 +34,7 @@ my %sources = (
         },
     },
 );
+
 my @source_order = qw( Lingua::Stem::Snowball Lingua::Stem::UniNE );
 my %is_language  = map { %{$_->{languages}} } values %sources;
 my @languages    = sort keys %is_language;
@@ -53,28 +54,43 @@ has source => (
 );
 
 has _stemmer => (
-    is => 'rw',
+    is      => 'rw',
+    builder => '_build_stemmer',
+    clearer => '_clear_stemmer',
+    lazy    => 1,
 );
 
+# the stemmer is cleared whenever a language or source is updated
 sub _trigger_language {
     my $self = shift;
 
-    if (!$self->source || !$sources{$self->source}{languages}{$self->language}) {
-        $self->source(
-            first { $sources{$_}{languages}{$self->language} } @source_order
-        );
-    }
+    $self->_clear_stemmer;
 
-    $self->_stemmer(
-        $sources{$self->source}{stemmer}->($self->language)
+    # keep current source if it supports this language
+    return if $self->source
+           && $sources{$self->source}{languages}{$self->language};
+
+    # use the first supported source for this language
+    $self->source(
+        first { $sources{$_}{languages}{$self->language} } @source_order
     );
 }
 
 sub _trigger_source {
     my $self = shift;
 
-    die "Invalid source '$_[0]' for language '", $self->language, "'"
-        unless $sources{$_[0]}{languages}{$self->language};
+    $self->_clear_stemmer;
+}
+
+# the stemmer is built lazily on first use
+sub _build_stemmer {
+    my $self = shift;
+
+    die sprintf "Invalid source '%s' for language '%s'" => (
+        $self->source, $self->language
+    ) unless $sources{$self->source}{languages}{$self->language};
+
+    $self->_stemmer( $sources{$self->source}{stemmer}->($self->language) );
 }
 
 sub languages {
