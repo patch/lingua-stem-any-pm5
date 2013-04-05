@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-Lingua::Stem::Any - consistent interface to any stemmer on CPAN
+Lingua::Stem::Any - Consistent interface to any stemmer on CPAN
 
 =head1 VERSION
 
@@ -16,7 +16,10 @@ This document describes Lingua::Stem::Any v0.00_1.
     $stemmer = Lingua::Stem::Any->new(language => 'de');
 
     # create German stemmer explicitly using Lingua::Stem::Snowball
-    $stemmer = Lingua::Stem::Any->new(language => 'de', source => 'snowball');
+    $stemmer = Lingua::Stem::Any->new(
+        language => 'de',
+        source   => 'Lingua::Stem::Snowball',
+    );
 
     # get stem for word
     $stem = $stemmer->stem($word);
@@ -31,7 +34,7 @@ This document describes Lingua::Stem::Any v0.00_1.
 
 This module aims to provide a simple unified interface to any stemmer on CPAN.
 It will provide a default available source module when a language is requested
-and no specific source is requested.
+but no source is requested.
 
 =head2 Attributes
 
@@ -81,20 +84,16 @@ IETF language tags such as C<pt-PT> or C<pt-BR>.
 
 The following source modules are currently supported.
 
-    ┌────────────────────────┬──────────┬──────────────────────────────────────────────┐
-    │ Module                 │ Alias    │ Languages                                    │
-    ├────────────────────────┼──────────┼──────────────────────────────────────────────┤
-    │ Lingua::Stem::Snowball │ snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
-    │ Lingua::Stem::UniNE    │ unine    │ bg cs fa                                     │
-    └────────────────────────┴──────────┴──────────────────────────────────────────────┘
+    ┌────────────────────────┬──────────────────────────────────────────────┐
+    │ Module                 │ Languages                                    │
+    ├────────────────────────┼──────────────────────────────────────────────┤
+    │ Lingua::Stem::Snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
+    │ Lingua::Stem::UniNE    │ bg cs fa                                     │
+    └────────────────────────┴──────────────────────────────────────────────┘
 
-The full module name or the listed alias can be used to specify the source.  If
-no source is specified, the first available source in the list that supports the
-specified language is used.  The full module names are case sensitive and the
-aliases are case insensitive.
-
-    # get supported sources for the current language
-    @sources = $stemmer->sources;
+A module name is used to specify the source.  If no source is specified, the
+first available source in the above list with support for the current language
+is used.  The source names are case sensitive.
 
     # get current source
     $source = $stemmer->source;
