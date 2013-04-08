@@ -3,6 +3,7 @@ package Lingua::Stem::Any;
 use v5.6;
 use utf8;
 use Moo;
+use Carp;
 use List::Util qw( first );
 
 our $VERSION = '0.01';
@@ -41,7 +42,8 @@ my @languages    = sort keys %is_language;
 
 has language => (
     is       => 'rw',
-    isa      => sub { die "Invalid language '$_[0]'" if !$is_language{$_[0]} },
+    isa      => sub { croak "Invalid language '$_[0]'"
+                      unless $is_language{$_[0]} },
     coerce   => sub { defined $_[0] ? lc $_[0] : '' },
     trigger  => 1,
     required => 1,
@@ -49,7 +51,8 @@ has language => (
 
 has source => (
     is      => 'rw',
-    isa     => sub { die "Invalid source '$_[0]'" if !$sources{$_[0]} },
+    isa     => sub { croak "Invalid source '$_[0]'"
+                     unless $sources{$_[0]} },
     trigger => 1,
 );
 
@@ -86,7 +89,7 @@ sub _trigger_source {
 sub _build_stemmer {
     my $self = shift;
 
-    die sprintf "Invalid source '%s' for language '%s'" => (
+    croak sprintf "Invalid source '%s' for language '%s'" => (
         $self->source, $self->language
     ) unless $sources{$self->source}{languages}{$self->language};
 

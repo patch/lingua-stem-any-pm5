@@ -17,6 +17,7 @@ my $builder = Module::Build->new(
         'strict'                 => 0,
         'utf8'                   => 0,
         'warnings'               => 0,
+        'Carp'                   => 0,
         'Lingua::Stem::Snowball' => 0,
         'Lingua::Stem::UniNE'    => 0,
         'List::Util'             => 0,
