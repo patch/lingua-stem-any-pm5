@@ -3,14 +3,15 @@ use warnings;
 use Module::Build;
 
 my $builder = Module::Build->new(
-    module_name    => 'Lingua::Stem::Any',
-    license        => 'perl',
-    create_readme  => 1,
+    module_name   => 'Lingua::Stem::Any',
+    license       => 'perl',
+    create_readme => 1,
     configure_requires => {
-        'Module::Build' => 0.36,
+        'Module::Build' => '0.36',
     },
     build_requires => {
-        'Test::More' => 0.41,  # diag()
+        'Pod::Man'   => '2.04',
+        'Test::More' => '0.82',
     },
     requires => {
         'perl'                   => '5.6.0',
@@ -21,7 +22,7 @@ my $builder = Module::Build->new(
         'Lingua::Stem::Snowball' => 0,
         'Lingua::Stem::UniNE'    => 0,
         'List::Util'             => 0,
-        'Moo'                    => 1.000000,
+        'Moo'                    => '1.000000',
     },
     meta_merge => {
         resources => {
