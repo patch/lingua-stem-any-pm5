@@ -13,25 +13,33 @@ my %sources = (
         languages => {map { $_ => 1 } qw(
             da de en es fi fr hu it nl no pt ro ru sv tr
         )},
-        stemmer => sub {
-            my ($language) = @_;
+        builder => sub {
+            my $language = shift;
             require Lingua::Stem::Snowball;
             my $stemmer = Lingua::Stem::Snowball->new(
                 lang     => $language,
                 encoding => 'UTF-8',
             );
-            return sub { $stemmer->stem($_[0]) };
+            return {
+                stem     => sub { $stemmer->stem(\@_) },
+                in_place => sub { $stemmer->stem_in_place(shift) },
+                language => sub { $stemmer->lang(shift) },
+            };
         },
     },
     'Lingua::Stem::UniNE' => {
         languages => {map { $_ => 1 } qw(
             bg cs fa
         )},
-        stemmer => sub {
-            my ($language) = @_;
+        builder => sub {
+            my $language = shift;
             require Lingua::Stem::UniNE;
             my $stemmer = Lingua::Stem::UniNE->new(language => $language);
-            return sub { $stemmer->stem($_[0]) };
+            return {
+                stem     => sub { $stemmer->stem(@_) },
+                in_place => sub { $stemmer->stem(shift) },
+                language => sub { $stemmer->language(shift) },
+            };
         },
     },
 );
@@ -57,7 +65,7 @@ has source => (
 );
 
 has _stemmer => (
-    is      => 'rw',
+    is      => 'ro',
     builder => '_build_stemmer',
     clearer => '_clear_stemmer',
     lazy    => 1,
@@ -93,7 +101,12 @@ sub _build_stemmer {
         $self->source, $self->language
     ) unless $sources{$self->source}{languages}{$self->language};
 
-    $self->_stemmer( $sources{$self->source}{stemmer}->($self->language) );
+    $sources{$self->source}{stemmer}
+        ||= $sources{$self->source}{builder}->($self->language);
+
+    $sources{$self->source}{stemmer}{language}->($self->language);
+
+    return $sources{$self->source}{stemmer};
 }
 
 sub languages {
@@ -108,13 +121,11 @@ sub stem {
     my $self = shift;
 
     if (@_ == 1 && ref $_[0] eq 'ARRAY') {
-        for my $word ( @{$_[0]} ) {
-            $word = $self->_stemmer->($word);
-        }
+        $self->_stemmer->{in_place}->($_[0]);
         return;
     }
     else {
-        my @stems = map { $self->_stemmer->($_) } @_;
+        my @stems = $self->_stemmer->{stem}->(@_);
         return wantarray ? @stems : pop @stems;
     }
 }
