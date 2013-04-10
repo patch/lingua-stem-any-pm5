@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 51;
+use Test::More tests => 87;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -109,3 +109,31 @@ $stemmer->language('tr');
 is $stemmer->language, 'tr',                     'lang changed via write-accessor';
 is $stemmer->source,   'Lingua::Stem::Snowball', 'source changed to match language';
 is $stemmer->stem('değilken'), 'değil', 'language change confirmed by stemming';
+
+my @tests = (
+    [qw( bg камили    камил    )],
+    [qw( cs velbloudi velbloud )],
+    [qw( da kameler   kamel    )],
+    [qw( de Kamele    kamel    )],
+    [qw( en camels    camel    )],
+    [qw( es camellos  camell   )],
+    [qw( fa شتر       شتر      )],
+    [qw( fi kamelit   kamel    )],
+    [qw( fr chameaux  chameau  )],
+    [qw( hu tevék     teve     )],
+    [qw( it cammelli  cammell  )],
+    [qw( nl kamelen   kamel    )],
+    [qw( no kameler   kamel    )],
+    [qw( pt camelos   camel    )],
+    [qw( ro cămile    căm      )],
+    [qw( ru верблюды  верблюд  )],
+    [qw( sv kameler   kamel    )],
+    [qw( tr develer   deve     )],
+);
+
+for my $test (@tests) {
+    my ($language, $word, $stem) = @$test;
+    $stemmer->language($language);
+    is $stemmer->language, $language, "switch language to $language";
+    is $stemmer->stem($word), $stem, "$language: $word stems to $stem";
+}
