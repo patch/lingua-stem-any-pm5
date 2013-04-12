@@ -11,7 +11,7 @@ our $VERSION = '0.01';
 my %sources = (
     'Lingua::Stem::Snowball' => {
         languages => {map { $_ => 1 } qw(
-            da de en es fi fr hu it nl no pt ro ru sv tr
+            da de en es fi fr hu it la nl no pt ro ru sv tr
         )},
         builder => sub {
             my $language = shift;
@@ -42,11 +42,31 @@ my %sources = (
             };
         },
     },
+    'Lingua::LA::Stemmer' => {
+        languages => { la => 1 },
+        builder => sub {
+            my $language = shift;
+            require Lingua::LA::Stemmer;
+            return {
+                stem     => sub { Lingua::LA::Stemmer::stem(@_) },
+                in_place => sub {
+                    for my $word (@{$_[0]}) {
+                        $word = Lingua::LA::Stemmer::stem($word);
+                    }
+                },
+                language => sub {},
+            };
+        },
+    },
 );
 
-my @source_order = qw( Lingua::Stem::Snowball Lingua::Stem::UniNE );
-my %is_language  = map { %{$_->{languages}} } values %sources;
-my @languages    = sort keys %is_language;
+my @source_order = qw(
+    Lingua::Stem::Snowball
+    Lingua::Stem::UniNE
+    Lingua::LA::Stemmer
+);
+my %is_language = map { %{$_->{languages}} } values %sources;
+my @languages   = sort keys %is_language;
 
 has language => (
     is       => 'rw',
@@ -191,6 +211,7 @@ The following language codes are currently supported.
     │ German     │ de │
     │ Hungarian  │ hu │
     │ Italian    │ it │
+    │ Latin      │ la │
     │ Norwegian  │ no │
     │ Persian    │ fa │
     │ Portuguese │ pt │
@@ -225,6 +246,7 @@ The following source modules are currently supported.
     ├────────────────────────┼──────────────────────────────────────────────┤
     │ Lingua::Stem::Snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
     │ Lingua::Stem::UniNE    │ bg cs fa                                     │
+    │ Lingua::LA::Stemmer    │ la                                           │
     └────────────────────────┴──────────────────────────────────────────────┘
 
 A module name is used to specify the source.  If no source is specified, the
