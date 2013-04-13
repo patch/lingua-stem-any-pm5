@@ -42,6 +42,22 @@ my %sources = (
             };
         },
     },
+    'Lingua::AR::Word' => {
+        languages => { ar => 1 },
+        builder => sub {
+            my $language = shift;
+            require Lingua::AR::Word::Stem;
+            return {
+                stem     => sub { map { Lingua::AR::Word::stem($_) } @_ },
+                in_place => sub {
+                    for my $word (@{$_[0]}) {
+                        $word = Lingua::AR::Word::stem($word);
+                    }
+                },
+                language => sub {},
+            };
+        },
+    },
     'Lingua::LA::Stemmer' => {
         languages => { la => 1 },
         builder => sub {
@@ -63,6 +79,7 @@ my %sources = (
 my @source_order = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
+    Lingua::AR::Word
     Lingua::LA::Stemmer
 );
 my %is_language = map { %{$_->{languages}} } values %sources;
@@ -201,6 +218,7 @@ but no source is requested.
 The following language codes are currently supported.
 
     ┌────────────┬────┐
+    │ Arabic     │ ar │
     │ Bulgarian  │ bg │
     │ Czech      │ cs │
     │ Danish     │ da │
@@ -246,6 +264,7 @@ The following source modules are currently supported.
     ├────────────────────────┼──────────────────────────────────────────────┤
     │ Lingua::Stem::Snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
     │ Lingua::Stem::UniNE    │ bg cs fa                                     │
+    │ Lingua::AR::Word       │ ar                                           │
     │ Lingua::LA::Stemmer    │ la                                           │
     └────────────────────────┴──────────────────────────────────────────────┘
 
