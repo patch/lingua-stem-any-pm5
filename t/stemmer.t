@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 93;
+use Test::More tests => 99;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -28,6 +28,7 @@ my @sources = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
     Lingua::AR::Word
+    Lingua::Stem::En
     Lingua::GL::Stemmer
     Lingua::LA::Stemmer
 );
@@ -118,6 +119,16 @@ is $stemmer->language, 'tr',                     'lang changed via write-accesso
 is $stemmer->source,   'Lingua::Stem::Snowball', 'source changed to match language';
 is $stemmer->stem('değilken'), 'değil', 'language change confirmed by stemming';
 
+$stemmer->source('Lingua::Stem::UniNE');
+$stemmer->language('en');
+is $stemmer->source, 'Lingua::Stem::Snowball', 'source implicitly changed';
+is $stemmer->stem('liquidize'), 'liquid',   'American stem with snowball';
+is $stemmer->stem('liquidise'), 'liquidis', 'no Brittish stem with snowball';
+$stemmer->source('Lingua::Stem::En');
+is $stemmer->source, 'Lingua::Stem::En', 'source explicitly changed';
+is $stemmer->stem('liquidize'), 'liquid', 'American stem with Lingua::Stemm::En';
+is $stemmer->stem('liquidise'), 'liquid', 'Brittish stem with Lingua::Stemm::En';
+
 my @tests = (
     [qw( ar القامع    قمع      )],
     [qw( bg камили    камил    )],
@@ -129,7 +140,7 @@ my @tests = (
     [qw( fa شتر       شتر      )],
     [qw( fi kamelit   kamel    )],
     [qw( fr chameaux  chameau  )],
-    [qw( gl camellos  camelo   )],
+    [qw( gl cebolas   cebol    )],
     [qw( hu tevék     teve     )],
     [qw( it cammelli  cammell  )],
     [qw( la cameli    camel    )],

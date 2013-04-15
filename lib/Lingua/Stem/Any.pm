@@ -58,6 +58,24 @@ my %sources = (
             };
         },
     },
+    'Lingua::Stem::En' => {
+        languages => { en => 1 },
+        builder => sub {
+            my $language = shift;
+            require Lingua::Stem::En;
+            return {
+                stem     => sub { @{Lingua::Stem::En::stem({ -words => \@_ })} },
+                in_place => sub {
+                    for my $word (@{$_[0]}) {
+                        $word = @{Lingua::Stem::En::stem({
+                            -words => [$word]
+                        })}[0];
+                    }
+                },
+                language => sub {},
+            };
+        },
+    },
     'Lingua::GL::Stemmer' => {
         languages => { gl => 1 },
         builder => sub {
@@ -96,6 +114,7 @@ my @source_order = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
     Lingua::AR::Word
+    Lingua::Stem::En
     Lingua::GL::Stemmer
     Lingua::LA::Stemmer
 );
