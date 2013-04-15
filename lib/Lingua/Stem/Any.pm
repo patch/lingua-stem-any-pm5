@@ -11,7 +11,7 @@ our $VERSION = '0.01';
 my %sources = (
     'Lingua::Stem::Snowball' => {
         languages => {map { $_ => 1 } qw(
-            da de en es fi fr hu it la nl no pt ro ru sv tr
+            da de en es fi fr gl hu it la nl no pt ro ru sv tr
         )},
         builder => sub {
             my $language = shift;
@@ -58,6 +58,22 @@ my %sources = (
             };
         },
     },
+    'Lingua::GL::Stemmer' => {
+        languages => { gl => 1 },
+        builder => sub {
+            my $language = shift;
+            require Lingua::GL::Stemmer;
+            return {
+                stem     => sub { Lingua::GL::Stemmer::stem(@_) },
+                in_place => sub {
+                    for my $word (@{$_[0]}) {
+                        $word = Lingua::GL::Stemmer::stem($word);
+                    }
+                },
+                language => sub {},
+            };
+        },
+    },
     'Lingua::LA::Stemmer' => {
         languages => { la => 1 },
         builder => sub {
@@ -80,6 +96,7 @@ my @source_order = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
     Lingua::AR::Word
+    Lingua::GL::Stemmer
     Lingua::LA::Stemmer
 );
 my %is_language = map { %{$_->{languages}} } values %sources;
@@ -226,6 +243,7 @@ The following language codes are currently supported.
     │ English    │ en │
     │ Finnish    │ fi │
     │ French     │ fr │
+    │ Galician   │ gl │
     │ German     │ de │
     │ Hungarian  │ hu │
     │ Italian    │ it │
@@ -265,6 +283,7 @@ The following source modules are currently supported.
     │ Lingua::Stem::Snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
     │ Lingua::Stem::UniNE    │ bg cs fa                                     │
     │ Lingua::AR::Word       │ ar                                           │
+    │ Lingua::GL::Stemmer    │ gl                                           │
     │ Lingua::LA::Stemmer    │ la                                           │
     └────────────────────────┴──────────────────────────────────────────────┘
 

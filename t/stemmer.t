@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 91;
+use Test::More tests => 93;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -14,7 +14,7 @@ can_ok $stemmer, qw( stem language languages source );
 is $stemmer->language, 'cs', 'language read-accessor';
 
 my @langs = sort qw(
-    ar bg cs da de en es fa fi fr hu it la nl no pt ro ru sv tr
+    ar bg cs da de en es fa fi fr gl hu it la nl no pt ro ru sv tr
 );
 my $langs = @langs;
 is_deeply [$stemmer->languages],          \@langs, 'object method list';
@@ -28,6 +28,7 @@ my @sources = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
     Lingua::AR::Word
+    Lingua::GL::Stemmer
     Lingua::LA::Stemmer
 );
 my $sources = @sources;
@@ -128,6 +129,7 @@ my @tests = (
     [qw( fa شتر       شتر      )],
     [qw( fi kamelit   kamel    )],
     [qw( fr chameaux  chameau  )],
+    [qw( gl camellos  camelo   )],
     [qw( hu tevék     teve     )],
     [qw( it cammelli  cammell  )],
     [qw( la cameli    camel    )],

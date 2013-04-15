@@ -45,6 +45,7 @@ but no source is requested.
 The following language codes are currently supported.
 
     ┌────────────┬────┐
+    │ Arabic     │ ar │
     │ Bulgarian  │ bg │
     │ Czech      │ cs │
     │ Danish     │ da │
@@ -52,9 +53,11 @@ The following language codes are currently supported.
     │ English    │ en │
     │ Finnish    │ fi │
     │ French     │ fr │
+    │ Galician   │ gl │
     │ German     │ de │
     │ Hungarian  │ hu │
     │ Italian    │ it │
+    │ Latin      │ la │
     │ Norwegian  │ no │
     │ Persian    │ fa │
     │ Portuguese │ pt │
@@ -89,6 +92,9 @@ The following source modules are currently supported.
     ├────────────────────────┼──────────────────────────────────────────────┤
     │ Lingua::Stem::Snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
     │ Lingua::Stem::UniNE    │ bg cs fa                                     │
+    │ Lingua::AR::Word       │ ar                                           │
+    │ Lingua::GL::Stemmer    │ gl                                           │
+    │ Lingua::LA::Stemmer    │ la                                           │
     └────────────────────────┴──────────────────────────────────────────────┘
 
 A module name is used to specify the source.  If no source is specified, the
