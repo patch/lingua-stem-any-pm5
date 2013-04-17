@@ -42,6 +42,21 @@ my %sources = (
             };
         },
     },
+    'Lingua::Stem' => {
+        languages => {map { $_ => 1 } qw(
+            da de en fr gl it no pt ru sv
+        )},
+        builder => sub {
+            my $language = shift;
+            require Lingua::Stem;
+            my $stemmer = Lingua::Stem->new(-locale => $language);
+            return {
+                stem     => sub { @{$stemmer->stem(@_)} },
+                in_place => sub { $stemmer->stem_in_place(shift) },
+                language => sub { $stemmer->set_locale(shift) },
+            };
+        },
+    },
     'Lingua::AR::Word' => {
         languages => { ar => 1 },
         builder => sub {
@@ -58,73 +73,23 @@ my %sources = (
             };
         },
     },
-    'Lingua::Stem::En' => {
-        languages => { en => 1 },
-        builder => sub {
-            my $language = shift;
-            require Lingua::Stem::En;
-            return {
-                stem     => sub { @{Lingua::Stem::En::stem({ -words => \@_ })} },
-                in_place => sub {
-                    for my $word (@{$_[0]}) {
-                        $word = @{Lingua::Stem::En::stem({
-                            -words => [$word]
-                        })}[0];
-                    }
-                },
-                language => sub {},
-            };
-        },
-    },
-    'Lingua::GL::Stemmer' => {
-        languages => { gl => 1 },
-        builder => sub {
-            my $language = shift;
-            require Lingua::GL::Stemmer;
-            return {
-                stem     => sub { Lingua::GL::Stemmer::stem(@_) },
-                in_place => sub {
-                    for my $word (@{$_[0]}) {
-                        $word = Lingua::GL::Stemmer::stem($word);
-                    }
-                },
-                language => sub {},
-            };
-        },
-    },
-    'Lingua::LA::Stemmer' => {
-        languages => { la => 1 },
-        builder => sub {
-            my $language = shift;
-            require Lingua::LA::Stemmer;
-            return {
-                stem     => sub { Lingua::LA::Stemmer::stem(@_) },
-                in_place => sub {
-                    for my $word (@{$_[0]}) {
-                        $word = Lingua::LA::Stemmer::stem($word);
-                    }
-                },
-                language => sub {},
-            };
-        },
-    },
 );
 
 my @source_order = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
+    Lingua::Stem
     Lingua::AR::Word
-    Lingua::Stem::En
-    Lingua::GL::Stemmer
-    Lingua::LA::Stemmer
 );
 my %is_language = map { %{$_->{languages}} } values %sources;
 my @languages   = sort keys %is_language;
 
 has language => (
     is       => 'rw',
-    isa      => sub { croak "Invalid language '$_[0]'"
-                      unless $is_language{$_[0]} },
+    isa      => sub {
+        croak "Language is not defined"  unless defined $_[0];
+        croak "Invalid language '$_[0]'" unless $is_language{$_[0]};
+    },
     coerce   => sub { defined $_[0] ? lc $_[0] : '' },
     trigger  => 1,
     required => 1,
@@ -132,8 +97,10 @@ has language => (
 
 has source => (
     is      => 'rw',
-    isa     => sub { croak "Invalid source '$_[0]'"
-                     unless $sources{$_[0]} },
+    isa     => sub {
+        croak "Source is not defined"  unless defined $_[0];
+        croak "Invalid source '$_[0]'" unless $sources{$_[0]};
+    },
     trigger => 1,
 );
 
@@ -301,9 +268,8 @@ The following source modules are currently supported.
     ├────────────────────────┼──────────────────────────────────────────────┤
     │ Lingua::Stem::Snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
     │ Lingua::Stem::UniNE    │ bg cs fa                                     │
+    │ Lingua::Stem           │ da de en fr gl it no pt ru sv                │
     │ Lingua::AR::Word       │ ar                                           │
-    │ Lingua::GL::Stemmer    │ gl                                           │
-    │ Lingua::LA::Stemmer    │ la                                           │
     └────────────────────────┴──────────────────────────────────────────────┘
 
 A module name is used to specify the source.  If no source is specified, the

@@ -27,10 +27,8 @@ is scalar Lingua::Stem::Any::languages,    $langs, 'function scalar';
 my @sources = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
+    Lingua::Stem
     Lingua::AR::Word
-    Lingua::Stem::En
-    Lingua::GL::Stemmer
-    Lingua::LA::Stemmer
 );
 my $sources = @sources;
 is_deeply [$stemmer->sources],          \@sources, 'object method list';
@@ -124,8 +122,8 @@ $stemmer->language('en');
 is $stemmer->source, 'Lingua::Stem::Snowball', 'source implicitly changed';
 is $stemmer->stem('liquidize'), 'liquid',   'American stem with snowball';
 is $stemmer->stem('liquidise'), 'liquidis', 'no Brittish stem with snowball';
-$stemmer->source('Lingua::Stem::En');
-is $stemmer->source, 'Lingua::Stem::En', 'source explicitly changed';
+$stemmer->source('Lingua::Stem');
+is $stemmer->source, 'Lingua::Stem', 'source explicitly changed';
 is $stemmer->stem('liquidize'), 'liquid', 'American stem with Lingua::Stemm::En';
 is $stemmer->stem('liquidise'), 'liquid', 'Brittish stem with Lingua::Stemm::En';
 
