@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 99;
+use Test::More tests => 111;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -149,6 +149,13 @@ my @tests = (
     [qw( ru верблюды  верблюд  )],
     [qw( sv kameler   kamel    )],
     [qw( tr develer   deve     )],
+
+    [qw( da ikke ikk )],
+    [qw( da være vær )],
+    [qw( de eine ein )],
+    [qw( de für fur )],
+    [qw( de françoise françois )],
+    [qw( en françoise françois )],
 );
 
 for my $test (@tests) {
