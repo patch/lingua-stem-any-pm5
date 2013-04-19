@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 111;
+use Test::More tests => 177;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -155,7 +155,40 @@ my @tests = (
     [qw( de eine ein )],
     [qw( de für fur )],
     [qw( de françoise françois )],
-    [qw( en françoise françois )],
+    [qw( en it's it )],
+    [qw( en françois françoi )],
+    [qw( es para par )],
+    [qw( es qué que )],
+    [qw( es mañana mañan )],
+    [qw( fi olen ole )],
+    [qw( fi että et )],
+    [qw( fi täällä tääl )],
+    [qw( fr les le )],
+    [qw( fr très tres )],
+    [qw( fr même mêm )],
+    [qw( hu azt az )],
+    [qw( hu miért mi )],
+    [qw( hu köszönöm köszönö )],
+    [qw( it sono son )],
+    [qw( it perché perc )],
+    [qw( it é è )],
+    [qw( nl maar mar )],
+    [qw( nl oké oke )],
+    [qw( nl carrière carrièr )],
+    [qw( no ikke ikk )],
+    [qw( no være vær )],
+    [qw( pt para par )],
+    [qw( pt você voc )],
+    [qw( pt não nã )],
+    [qw( ro bine bin )],
+    [qw( ro dacă dac )],
+    [qw( ro ştii şti )],
+    [qw( ru это эт )],
+    [qw( sv inte int )],
+    [qw( sv måste måst )],
+    [qw( tr ama am )],
+    [qw( tr olduğunu olduk )],
+    [qw( tr için iç )],
 );
 
 for my $test (@tests) {
