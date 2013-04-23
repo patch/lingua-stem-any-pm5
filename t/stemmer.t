@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 177;
+use Test::More tests => 149;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -128,28 +128,11 @@ is $stemmer->stem('liquidize'), 'liquid', 'American stem with Lingua::Stemm::En'
 is $stemmer->stem('liquidise'), 'liquid', 'Brittish stem with Lingua::Stemm::En';
 
 my @tests = (
-    [qw( ar القامع    قمع      )],
-    [qw( bg камили    камил    )],
-    [qw( cs velbloudi velbloud )],
-    [qw( da kameler   kamel    )],
-    [qw( de Kamele    kamel    )],
-    [qw( en camels    camel    )],
-    [qw( es camellos  camell   )],
-    [qw( fa شتر       شتر      )],
-    [qw( fi kamelit   kamel    )],
-    [qw( fr chameaux  chameau  )],
-    [qw( gl cebolas   cebol    )],
-    [qw( hu tevék     teve     )],
-    [qw( it cammelli  cammell  )],
-    [qw( la cameli    camel    )],
-    [qw( nl kamelen   kamel    )],
-    [qw( no kameler   kamel    )],
-    [qw( pt camelos   camel    )],
-    [qw( ro cămile    căm      )],
-    [qw( ru верблюды  верблюд  )],
-    [qw( sv kameler   kamel    )],
-    [qw( tr develer   deve     )],
-
+    [qw( ar هناك هنك )],
+    [qw( bg това тов )],
+    [qw( cs jste jst )],
+    [qw( cs není nen )],
+    [qw( cs dobře dobř )],
     [qw( da ikke ikk )],
     [qw( da være vær )],
     [qw( de eine ein )],
@@ -160,12 +143,14 @@ my @tests = (
     [qw( es para par )],
     [qw( es qué que )],
     [qw( es mañana mañan )],
+    [qw( fa برای برا )],
     [qw( fi olen ole )],
     [qw( fi että et )],
     [qw( fi täällä tääl )],
     [qw( fr les le )],
     [qw( fr très tres )],
     [qw( fr même mêm )],
+    [qw( gl cebolas cebol )],
     [qw( hu azt az )],
     [qw( hu miért mi )],
     [qw( hu köszönöm köszönö )],
