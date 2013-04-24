@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 149;
+use Test::More tests => 195;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -178,7 +178,13 @@ my @tests = (
 
 for my $test (@tests) {
     my ($language, $word, $stem) = @$test;
+
     $stemmer->language($language);
     is $stemmer->language, $language, "switch language to $language";
     is $stemmer->stem($word), $stem, "$language: $word stems to $stem";
+
+    my @words = ($word) x 2;
+    my @stems = ($stem) x 2;
+    $stemmer->stem(\@words);
+    is_deeply \@words, \@stems, "$language: $word stems in place to $stem";
 }
