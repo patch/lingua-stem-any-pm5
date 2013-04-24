@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 195;
+use Test::More tests => 198;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -128,6 +128,7 @@ is $stemmer->stem('liquidize'), 'liquid', 'American stem with Lingua::Stemm::En'
 is $stemmer->stem('liquidise'), 'liquid', 'Brittish stem with Lingua::Stemm::En';
 
 my @tests = (
+    [qw( ar لا لا )],
     [qw( ar هناك هنك )],
     [qw( bg това тов )],
     [qw( cs jste jst )],

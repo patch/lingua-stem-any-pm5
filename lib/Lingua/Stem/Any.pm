@@ -63,10 +63,18 @@ my %sources = (
             my $language = shift;
             require Lingua::AR::Word::Stem;
             return {
-                stem     => sub { map { Lingua::AR::Word::stem($_) } @_ },
+                stem => sub {
+                    map {
+                        my $word = $_;
+                        my $stem = Lingua::AR::Word::stem($word);
+                        $stem eq 'NotFound' ? $word : $stem;
+                    } @_
+                },
                 in_place => sub {
                     for my $word (@{$_[0]}) {
-                        $word = Lingua::AR::Word::stem($word);
+                        my $stem = Lingua::AR::Word::stem($word);
+                        next if $stem eq 'NotFound';
+                        $word = $stem;
                     }
                 },
                 language => sub {},
