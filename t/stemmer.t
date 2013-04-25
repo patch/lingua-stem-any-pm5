@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 192;
+use Test::More tests => 186;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -17,12 +17,11 @@ my @langs = sort qw(
     bg cs da de en es fa fi fr gl hu it la nl no pt ro ru sv tr
 );
 my $langs = @langs;
-is_deeply [$stemmer->languages],          \@langs, 'object method list';
-is_deeply [Lingua::Stem::Any->languages], \@langs, 'class method list';
-is_deeply [Lingua::Stem::Any::languages], \@langs, 'function list';
-is scalar $stemmer->languages,             $langs, 'object method scalar';
-is scalar Lingua::Stem::Any->languages,    $langs, 'class method scalar';
-is scalar Lingua::Stem::Any::languages,    $langs, 'function scalar';
+is_deeply [$stemmer->languages], \@langs, 'list languages';
+is scalar $stemmer->languages,    $langs, 'scalar languages';
+is_deeply [$stemmer->languages('Lingua::Stem::Snowball')], [qw(
+    da de en es fi fr hu it la nl no pt ro ru sv tr
+)], 'list languages for source';
 
 my @sources = qw(
     Lingua::Stem::Snowball
@@ -30,12 +29,11 @@ my @sources = qw(
     Lingua::Stem
 );
 my $sources = @sources;
-is_deeply [$stemmer->sources],          \@sources, 'object method list';
-is_deeply [Lingua::Stem::Any->sources], \@sources, 'class method list';
-is_deeply [Lingua::Stem::Any::sources], \@sources, 'function list';
-is scalar $stemmer->sources,             $sources, 'object method scalar';
-is scalar Lingua::Stem::Any->sources,    $sources, 'class method scalar';
-is scalar Lingua::Stem::Any::sources,    $sources, 'function scalar';
+is_deeply [$stemmer->sources], \@sources, 'list sources';
+is scalar $stemmer->sources,    $sources, 'scalar sources';
+is_deeply [$stemmer->sources('en')], [qw(
+    Lingua::Stem::Snowball Lingua::Stem
+)], 'list sources for language';
 
 @words = @words_copy = qw( že dobře ještě );
 is_deeply [$stemmer->stem(@words)], [qw( že dobř jesk )], 'list of words';
@@ -148,7 +146,7 @@ my @tests = (
     [qw( fr les le )],
     [qw( fr très tres )],
     [qw( fr même mêm )],
-    [qw( gl cebolas cebol )],
+    [qw( gl cebolas ceb )],
     [qw( hu azt az )],
     [qw( hu miért mi )],
     [qw( hu köszönöm köszönö )],

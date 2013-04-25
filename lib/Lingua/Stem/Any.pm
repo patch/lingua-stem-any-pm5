@@ -11,7 +11,7 @@ our $VERSION = '0.01';
 my %sources = (
     'Lingua::Stem::Snowball' => {
         languages => {map { $_ => 1 } qw(
-            da de en es fi fr gl hu it la nl no pt ro ru sv tr
+            da de en es fi fr hu it la nl no pt ro ru sv tr
         )},
         builder => sub {
             my $language = shift;
@@ -52,7 +52,7 @@ my %sources = (
             my $stemmer = Lingua::Stem->new(-locale => $language);
             return {
                 stem     => sub { @{$stemmer->stem(@_)} },
-                in_place => sub { $stemmer->stem_in_place(shift) },
+                in_place => sub { eval { $stemmer->stem_in_place(shift) } },
                 language => sub { $stemmer->set_locale(shift) },
             };
         },
@@ -133,11 +133,20 @@ sub _build_stemmer {
 }
 
 sub languages {
-    return @languages;
+    my ($self, $source) = @_;
+
+    return @languages unless $source;
+    return ()         unless $sources{$source};
+    return sort keys %{$sources{$source}{languages}};
 }
 
 sub sources {
-    return @source_order;
+    my ($self, $language) = @_;
+
+    return @source_order unless $language;
+    return grep {
+        $sources{$_} && $sources{$_}{languages}{$language}
+    } @source_order;
 }
 
 sub stem {
@@ -294,21 +303,21 @@ supported.
 
 Returns a list of supported two-letter language codes using lowercase letters.
 
-    # object method
+    # all languages
     @languages = $stemmer->languages;
 
-    # class method
-    @languages = Lingua::Stem::UniNE->languages;
+    # languages supported by Lingua::Stem::Snowball
+    @languages = $stemmer->languages('Lingua::Stem::Snowball');
 
 =item sources
 
 Returns a list of supported source module names.
 
-    # object method
-    @languages = $stemmer->sources;
+    # all sources
+    @sources = $stemmer->sources;
 
-    # class method
-    @languages = Lingua::Stem::UniNE->sources;
+    # sources that support English
+    @sources = $stemmer->sources('en');
 
 =back
 
