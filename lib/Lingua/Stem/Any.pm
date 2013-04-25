@@ -5,6 +5,8 @@ use utf8;
 use Moo;
 use Carp;
 use List::Util qw( first );
+use Unicode::CaseFold qw( fc );
+use Unicode::Normalize qw( NFC );
 
 our $VERSION = '0.01';
 
@@ -85,6 +87,18 @@ has source => (
         croak "Invalid source '$_[0]'" unless $sources{$_[0]};
     },
     trigger => 1,
+);
+
+has normalize => (
+    is      => 'rw',
+    coerce  => sub { !!$_[0] },
+    default => 1,
+);
+
+has casefold => (
+    is      => 'rw',
+    coerce  => sub { !!$_[0] },
+    default => 1,
 );
 
 has _stemmer => (

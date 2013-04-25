@@ -24,6 +24,8 @@ my $builder = Module::Build->new(
         'Lingua::Stem::UniNE'    => '0.02',
         'List::Util'             => 0,
         'Moo'                    => '1.000000',
+        'Unicode::CaseFold'      => 0,
+        'Unicode::Normalize'     => 0,
     },
     meta_merge => {
         resources => {
