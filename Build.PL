@@ -19,7 +19,6 @@ my $builder = Module::Build->new(
         'utf8'                   => 0,
         'warnings'               => 0,
         'Carp'                   => 0,
-        'Lingua::AR::Word'       => 0,
         'Lingua::Stem'           => '0.80',
         'Lingua::Stem::Snowball' => '0.95',
         'Lingua::Stem::UniNE'    => '0.02',

@@ -57,37 +57,12 @@ my %sources = (
             };
         },
     },
-    'Lingua::AR::Word' => {
-        languages => { ar => 1 },
-        builder => sub {
-            my $language = shift;
-            require Lingua::AR::Word::Stem;
-            return {
-                stem => sub {
-                    map {
-                        my $word = $_;
-                        my $stem = Lingua::AR::Word::stem($word);
-                        $stem eq 'NotFound' ? $word : $stem;
-                    } @_
-                },
-                in_place => sub {
-                    for my $word (@{$_[0]}) {
-                        my $stem = Lingua::AR::Word::stem($word);
-                        next if $stem eq 'NotFound';
-                        $word = $stem;
-                    }
-                },
-                language => sub {},
-            };
-        },
-    },
 );
 
 my @source_order = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
     Lingua::Stem
-    Lingua::AR::Word
 );
 my %is_language = map { %{$_->{languages}} } values %sources;
 my @languages   = sort keys %is_language;
@@ -277,7 +252,6 @@ The following source modules are currently supported.
     │ Lingua::Stem::Snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
     │ Lingua::Stem::UniNE    │ bg cs fa                                     │
     │ Lingua::Stem           │ da de en fr gl it no pt ru sv                │
-    │ Lingua::AR::Word       │ ar                                           │
     └────────────────────────┴──────────────────────────────────────────────┘
 
 A module name is used to specify the source.  If no source is specified, the

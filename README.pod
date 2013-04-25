@@ -92,9 +92,7 @@ The following source modules are currently supported.
     ├────────────────────────┼──────────────────────────────────────────────┤
     │ Lingua::Stem::Snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
     │ Lingua::Stem::UniNE    │ bg cs fa                                     │
-    │ Lingua::AR::Word       │ ar                                           │
-    │ Lingua::GL::Stemmer    │ gl                                           │
-    │ Lingua::LA::Stemmer    │ la                                           │
+    │ Lingua::Stem           │ da de en fr gl it no pt ru sv                │
     └────────────────────────┴──────────────────────────────────────────────┘
 
 A module name is used to specify the source.  If no source is specified, the
