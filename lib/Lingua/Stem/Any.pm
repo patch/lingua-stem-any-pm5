@@ -10,6 +10,50 @@ use Unicode::Normalize qw( NFC );
 
 our $VERSION = '0.01';
 
+has language => (
+    is       => 'rw',
+    isa      => sub {
+        croak "Language is not defined"  unless defined $_[0];
+        croak "Invalid language '$_[0]'" unless _is_language($_[0]);
+    },
+    coerce   => sub { defined $_[0] ? lc $_[0] : '' },
+    trigger  => 1,
+    required => 1,
+);
+
+has source => (
+    is      => 'rw',
+    isa     => sub {
+        croak "Source is not defined"  unless defined $_[0];
+        croak "Invalid source '$_[0]'" unless _is_source($_[0]);
+    },
+    trigger => 1,
+);
+
+has normalize => (
+    is      => 'rw',
+    coerce  => sub { !!$_[0] },
+    default => 1,
+);
+
+has casefold => (
+    is      => 'rw',
+    coerce  => sub { !!$_[0] },
+    default => 1,
+);
+
+has _stemmer => (
+    is      => 'ro',
+    builder => '_build_stemmer',
+    clearer => '_clear_stemmer',
+    lazy    => 1,
+);
+
+has _stemmers => (
+    is      => 'ro',
+    default => sub { {} },
+);
+
 my %sources = (
     'Lingua::Stem::Snowball' => {
         languages => {map { $_ => 1 } qw(
@@ -58,58 +102,16 @@ my %sources = (
     },
 );
 
+my %languages = map { %{$_->{languages}} } values %sources;
+
 my @source_order = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
     Lingua::Stem
 );
 
-my %is_language = map { %{$_->{languages}} } values %sources;
-my @languages   = sort keys %is_language;
-
-has language => (
-    is       => 'rw',
-    isa      => sub {
-        croak "Language is not defined"  unless defined $_[0];
-        croak "Invalid language '$_[0]'" unless $is_language{$_[0]};
-    },
-    coerce   => sub { defined $_[0] ? lc $_[0] : '' },
-    trigger  => 1,
-    required => 1,
-);
-
-has source => (
-    is      => 'rw',
-    isa     => sub {
-        croak "Source is not defined"  unless defined $_[0];
-        croak "Invalid source '$_[0]'" unless $sources{$_[0]};
-    },
-    trigger => 1,
-);
-
-has normalize => (
-    is      => 'rw',
-    coerce  => sub { !!$_[0] },
-    default => 1,
-);
-
-has casefold => (
-    is      => 'rw',
-    coerce  => sub { !!$_[0] },
-    default => 1,
-);
-
-has _stemmer => (
-    is      => 'ro',
-    builder => '_build_stemmer',
-    clearer => '_clear_stemmer',
-    lazy    => 1,
-);
-
-has _stemmers => (
-    is      => 'ro',
-    default => sub { {} },
-);
+sub _is_language { exists $languages{ $_[0] } }
+sub _is_source   { exists $sources{   $_[0] } }
 
 # the stemmer is cleared whenever a language or source is updated
 sub _trigger_language {
@@ -174,7 +176,7 @@ sub stem {
 sub stem_in_place {
     my ($self, $words) = @_;
 
-    croak 'stem_in_place requires an arrayref'
+    croak 'Argument to stem_in_place() must be an arrayref'
         if ref $words ne 'ARRAY';
 
     for my $word (@$words) {
@@ -186,10 +188,16 @@ sub stem_in_place {
 
 sub languages {
     my ($self, $source) = @_;
+    my @languages;
 
-    return @languages unless $source;
-    return ()         unless $sources{$source};
-    return sort keys %{$sources{$source}{languages}};
+    if ($source && $sources{$source}) {
+        @languages = sort keys %{$sources{$source}{languages}};
+    }
+    elsif (!$source) {
+        @languages = sort keys %languages;
+    }
+
+    return @languages;
 }
 
 sub sources {
@@ -234,9 +242,6 @@ This document describes Lingua::Stem::Any v0.01.
 
     # get list of stems for list of words
     @stems = $stemmer->stem(@words);
-
-    # replace words in array reference with stems
-    $stemmer->stem_in_place(\@words);
 
 =head1 DESCRIPTION
 
@@ -332,9 +337,9 @@ casefolding when also enabled.
 
 =item stem
 
-When a list of strings is provided, each string is stemmed and a list of stems
-is returned.  The list returned will always have the same number of elements in
-the same order as the list provided.
+Accepts a list of strings, stems each string, and returns a list of stems.  The
+list returned will always have the same number of elements in the same order as
+the list provided.
 
     @stems = $stemmer->stem(@words);
 
@@ -347,10 +352,13 @@ supported.
 
 =item stem_in_place
 
-When an array reference is provided, each element is stemmed and replaced with
-the resulting stem.
+Accepts an array reference, stems each element, and replaces them with the
+resulting stems.
 
-    $stemmer->stem(\@words);
+    $stemmer->stem_in_place(\@words);
+
+This method is provided for potential optimization when a large array of words
+is to be stemmed.  The return value is not defined.
 
 =item languages
 
@@ -371,6 +379,16 @@ Returns a list of supported source module names.
 
     # sources that support English
     @sources = $stemmer->sources('en');
+
+=back
+
+=head1 TODO
+
+=over
+
+=item * optional stem caching
+
+=item * custom stemming exceptions
 
 =back
 

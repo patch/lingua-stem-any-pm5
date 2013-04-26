@@ -27,9 +27,6 @@ This document describes Lingua::Stem::Any v0.01.
     # get list of stems for list of words
     @stems = $stemmer->stem(@words);
 
-    # replace words in array reference with stems
-    $stemmer->stem_in_place(\@words);
-
 =head1 DESCRIPTION
 
 This module aims to provide a simple unified interface to any stemmer on CPAN.
@@ -124,9 +121,9 @@ casefolding when also enabled.
 
 =item stem
 
-When a list of strings is provided, each string is stemmed and a list of stems
-is returned.  The list returned will always have the same number of elements in
-the same order as the list provided.
+Accepts a list of strings, stems each string, and returns a list of stems.  The
+list returned will always have the same number of elements in the same order as
+the list provided.
 
     @stems = $stemmer->stem(@words);
 
@@ -139,10 +136,13 @@ supported.
 
 =item stem_in_place
 
-When an array reference is provided, each element is stemmed and replaced with
-the resulting stem.
+Accepts an array reference, stems each element, and replaces them with the
+resulting stems.
 
-    $stemmer->stem(\@words);
+    $stemmer->stem_in_place(\@words);
+
+This method is provided for potential optimization when a large array of words
+is to be stemmed.  The return value is not defined.
 
 =item languages
 
@@ -163,6 +163,16 @@ Returns a list of supported source module names.
 
     # sources that support English
     @sources = $stemmer->sources('en');
+
+=back
+
+=head1 TODO
+
+=over
+
+=item * optional stem caching
+
+=item * custom stemming exceptions
 
 =back
 
