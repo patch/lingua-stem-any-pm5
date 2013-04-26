@@ -210,7 +210,7 @@ __END__
 
 =head1 NAME
 
-Lingua::Stem::Any - Consistent interface to any stemmer on CPAN
+Lingua::Stem::Any - Unified interface to any stemmer on CPAN
 
 =head1 VERSION
 
@@ -236,7 +236,7 @@ This document describes Lingua::Stem::Any v0.01.
     @stems = $stemmer->stem(@words);
 
     # replace words in array reference with stems
-    $stemmer->stem(\@words);
+    $stemmer->stem_in_place(\@words);
 
 =head1 DESCRIPTION
 
@@ -253,7 +253,6 @@ but no source is requested.
 The following language codes are currently supported.
 
     ┌────────────┬────┐
-    │ Arabic     │ ar │
     │ Bulgarian  │ bg │
     │ Czech      │ cs │
     │ Danish     │ da │
@@ -342,14 +341,16 @@ the same order as the list provided.
     # get the stem for a single word
     $stem = $stemmer->stem($word);
 
+The words should be provided as character strings and the stems are returned as
+character strings.  Byte strings in arbitrary character encodings are not
+supported.
+
+=item stem_in_place
+
 When an array reference is provided, each element is stemmed and replaced with
 the resulting stem.
 
     $stemmer->stem(\@words);
-
-The words should be provided as character strings and the stems are returned as
-character strings.  Byte strings in arbitrary character encodings are not
-supported.
 
 =item languages
 
