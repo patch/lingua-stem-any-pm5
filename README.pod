@@ -105,6 +105,16 @@ is used.
     # change source
     $stemmer->source('Lingua::Stem::UniNE');
 
+=item casefold
+
+Apply Unicode casefolding to words before stemming them.  This is enabled by
+default and is performed before normalization when also enabled.
+
+=item normalize
+
+Apply Unicode NFC normalization to words before stemming them.  This is enabled
+by default and is performed after casefolding when also enabled.
+
 =back
 
 =head2 Methods
@@ -135,21 +145,21 @@ supported.
 
 Returns a list of supported two-letter language codes using lowercase letters.
 
-    # object method
+    # all languages
     @languages = $stemmer->languages;
 
-    # class method
-    @languages = Lingua::Stem::UniNE->languages;
+    # languages supported by Lingua::Stem::Snowball
+    @languages = $stemmer->languages('Lingua::Stem::Snowball');
 
 =item sources
 
 Returns a list of supported source module names.
 
-    # object method
-    @languages = $stemmer->sources;
+    # all sources
+    @sources = $stemmer->sources;
 
-    # class method
-    @languages = Lingua::Stem::UniNE->sources;
+    # sources that support English
+    @sources = $stemmer->sources('en');
 
 =back
 

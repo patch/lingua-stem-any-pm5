@@ -143,6 +143,40 @@ sub _build_stemmer {
     return $sources{$self->source}{stemmer};
 }
 
+sub _get_stem {
+    my ($self, $word) = @_;
+
+    $word = fc  $word if $self->casefold;
+    $word = NFC $word if $self->normalize;
+
+    return $self->_stemmer->{stem}($word);
+}
+
+sub stem {
+    my $self = shift;
+
+    return map { $self->_get_stem($_) } @_
+        if wantarray;
+
+    return $self->_get_stem(pop)
+        if @_;
+
+    return;
+}
+
+sub stem_in_place {
+    my ($self, $words) = @_;
+
+    croak 'stem_in_place requires an arrayref'
+        if ref $words ne 'ARRAY';
+
+    for my $word (@$words) {
+        $word = $self->_get_stem($word);
+    }
+
+    return;
+}
+
 sub languages {
     my ($self, $source) = @_;
 
@@ -159,31 +193,6 @@ sub sources {
     return grep {
         $sources{$_} && $sources{$_}{languages}{$language}
     } @source_order;
-}
-
-sub stem {
-    my $self = shift;
-
-    return map { $self->_stemmer->{stem}($_) } @_
-        if wantarray;
-
-    return $self->_stemmer->{stem}(pop)
-        if @_;
-
-    return;
-}
-
-sub stem_in_place {
-    my ($self, $words) = @_;
-
-    croak 'stem_in_place requires an arrayref'
-        if ref $words ne 'ARRAY';
-
-    for my $word (@$words) {
-        $word = $self->_stemmer->{stem}($word);
-    }
-
-    return;
 }
 
 1;
@@ -296,6 +305,16 @@ is used.
 
     # change source
     $stemmer->source('Lingua::Stem::UniNE');
+
+=item casefold
+
+Apply Unicode casefolding to words before stemming them.  This is enabled by
+default and is performed before normalization when also enabled.
+
+=item normalize
+
+Apply Unicode NFC normalization to words before stemming them.  This is enabled
+by default and is performed after casefolding when also enabled.
 
 =back
 
