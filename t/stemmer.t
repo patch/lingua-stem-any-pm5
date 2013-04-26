@@ -39,7 +39,7 @@ is_deeply [$stemmer->sources('en')], [qw(
 is_deeply [$stemmer->stem(@words)], [qw( že dobř jesk )], 'list of words';
 is_deeply \@words, \@words_copy, 'not destructive on arrays';
 
-$stemmer->stem(\@words);
+$stemmer->stem_in_place(\@words);
 is_deeply \@words, [qw( že dobř jesk )], 'arrayref modified in place';
 
 is_deeply scalar $stemmer->stem(@words), 'jesk', 'list of words in scalar';
@@ -83,7 +83,7 @@ $stemmer = new_ok 'Lingua::Stem::Any', [
 is_deeply [$stemmer->stem(@words)], [qw( sahet sing )], 'list of words';
 is_deeply \@words, \@words_copy, 'not destructive on arrays';
 
-$stemmer->stem(\@words);
+$stemmer->stem_in_place(\@words);
 is_deeply \@words, [qw( sahet sing )], 'arrayref modified in place';
 
 is_deeply scalar $stemmer->stem(@words), 'sing', 'list of words in scalar';
@@ -121,8 +121,8 @@ is $stemmer->stem('liquidize'), 'liquid',   'American stem with snowball';
 is $stemmer->stem('liquidise'), 'liquidis', 'no Brittish stem with snowball';
 $stemmer->source('Lingua::Stem');
 is $stemmer->source, 'Lingua::Stem', 'source explicitly changed';
-is $stemmer->stem('liquidize'), 'liquid', 'American stem with Lingua::Stemm::En';
-is $stemmer->stem('liquidise'), 'liquid', 'Brittish stem with Lingua::Stemm::En';
+is $stemmer->stem('liquidize'), 'liquid', 'American stem with Lingua::Stem';
+is $stemmer->stem('liquidise'), 'liquid', 'Brittish stem with Lingua::Stem';
 
 my @tests = (
     [qw( bg това тов )],
@@ -181,6 +181,6 @@ for my $test (@tests) {
 
     my @words = ($word) x 2;
     my @stems = ($stem) x 2;
-    $stemmer->stem(\@words);
+    $stemmer->stem_in_place(\@words);
     is_deeply \@words, \@stems, "$language: $word stems in place to $stem";
 }

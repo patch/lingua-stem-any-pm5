@@ -23,8 +23,7 @@ my %sources = (
                 encoding => 'UTF-8',
             );
             return {
-                stem     => sub { $stemmer->stem(\@_) },
-                in_place => sub { $stemmer->stem_in_place(shift) },
+                stem     => sub { $stemmer->stem(shift) },
                 language => sub { $stemmer->lang(shift) },
             };
         },
@@ -38,8 +37,7 @@ my %sources = (
             require Lingua::Stem::UniNE;
             my $stemmer = Lingua::Stem::UniNE->new(language => $language);
             return {
-                stem     => sub { $stemmer->stem(@_) },
-                in_place => sub { $stemmer->stem(shift) },
+                stem     => sub { $stemmer->stem(shift) },
                 language => sub { $stemmer->language(shift) },
             };
         },
@@ -53,8 +51,7 @@ my %sources = (
             require Lingua::Stem;
             my $stemmer = Lingua::Stem->new(-locale => $language);
             return {
-                stem     => sub { @{$stemmer->stem(@_)} },
-                in_place => sub { eval { $stemmer->stem_in_place(shift) } },
+                stem     => sub { @{ $stemmer->stem(shift) }[0] },
                 language => sub { $stemmer->set_locale(shift) },
             };
         },
@@ -139,9 +136,9 @@ sub _build_stemmer {
     ) unless $sources{$self->source}{languages}{$self->language};
 
     $sources{$self->source}{stemmer}
-        ||= $sources{$self->source}{builder}->($self->language);
+        ||= $sources{$self->source}{builder}( $self->language );
 
-    $sources{$self->source}{stemmer}{language}->($self->language);
+    $sources{$self->source}{stemmer}{language}( $self->language );
 
     return $sources{$self->source}{stemmer};
 }
@@ -158,6 +155,7 @@ sub sources {
     my ($self, $language) = @_;
 
     return @source_order unless $language;
+
     return grep {
         $sources{$_} && $sources{$_}{languages}{$language}
     } @source_order;
@@ -166,14 +164,26 @@ sub sources {
 sub stem {
     my $self = shift;
 
-    if (@_ == 1 && ref $_[0] eq 'ARRAY') {
-        $self->_stemmer->{in_place}->($_[0]);
-        return;
+    return map { $self->_stemmer->{stem}($_) } @_
+        if wantarray;
+
+    return $self->_stemmer->{stem}(pop)
+        if @_;
+
+    return;
+}
+
+sub stem_in_place {
+    my ($self, $words) = @_;
+
+    croak 'stem_in_place requires an arrayref'
+        if ref $words ne 'ARRAY';
+
+    for my $word (@$words) {
+        $word = $self->_stemmer->{stem}($word);
     }
-    else {
-        my @stems = $self->_stemmer->{stem}->(@_);
-        return wantarray ? @stems : pop @stems;
-    }
+
+    return;
 }
 
 1;
