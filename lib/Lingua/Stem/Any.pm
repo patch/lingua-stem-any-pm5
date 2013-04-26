@@ -63,6 +63,7 @@ my @source_order = qw(
     Lingua::Stem::UniNE
     Lingua::Stem
 );
+
 my %is_language = map { %{$_->{languages}} } values %sources;
 my @languages   = sort keys %is_language;
 
@@ -105,6 +106,11 @@ has _stemmer => (
     lazy    => 1,
 );
 
+has _stemmers => (
+    is      => 'ro',
+    default => sub { {} },
+);
+
 # the stemmer is cleared whenever a language or source is updated
 sub _trigger_language {
     my $self = shift;
@@ -135,12 +141,13 @@ sub _build_stemmer {
         $self->source, $self->language
     ) unless $sources{$self->source}{languages}{$self->language};
 
-    $sources{$self->source}{stemmer}
-        ||= $sources{$self->source}{builder}( $self->language );
+    my $stemmer
+        = $self->_stemmers->{$self->source}
+            ||= $sources{$self->source}{builder}( $self->language );
 
-    $sources{$self->source}{stemmer}{language}( $self->language );
+    $stemmer->{language}( $self->language );
 
-    return $sources{$self->source}{stemmer};
+    return $stemmer;
 }
 
 sub _get_stem {
@@ -308,13 +315,15 @@ is used.
 
 =item casefold
 
-Apply Unicode casefolding to words before stemming them.  This is enabled by
-default and is performed before normalization when also enabled.
+Boolean value specifying whether to apply Unicode casefolding to words before
+stemming them.  This is enabled by default and is performed before normalization
+when also enabled.
 
 =item normalize
 
-Apply Unicode NFC normalization to words before stemming them.  This is enabled
-by default and is performed after casefolding when also enabled.
+Boolean value specifying whether to apply Unicode NFC normalization to words
+before stemming them.  This is enabled by default and is performed after
+casefolding when also enabled.
 
 =back
 
