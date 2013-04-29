@@ -23,7 +23,7 @@ my $builder = Module::Build->new(
         'Lingua::Stem::Snowball' => '0.95',
         'Lingua::Stem::UniNE'    => '0.02',
         'List::Util'             => 0,
-        'Moo'                    => '1.000000',
+        'Moo'                    => '1.001000',
         'Unicode::CaseFold'      => 0,
         'Unicode::Normalize'     => 0,
     },
