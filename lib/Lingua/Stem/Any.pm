@@ -8,7 +8,7 @@ use List::Util qw( first );
 use Unicode::CaseFold qw( fc );
 use Unicode::Normalize qw( NFC );
 
-our $VERSION = '0.02';
+our $VERSION = '0.02_1';
 
 has language => (
     is       => 'rw',
@@ -222,7 +222,7 @@ Lingua::Stem::Any - Unified interface to any stemmer on CPAN
 
 =head1 VERSION
 
-This document describes Lingua::Stem::Any v0.02.
+This document describes Lingua::Stem::Any v0.02_1.
 
 =head1 SYNOPSIS
 

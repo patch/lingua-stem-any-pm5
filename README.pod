@@ -6,7 +6,7 @@ Lingua::Stem::Any - Unified interface to any stemmer on CPAN
 
 =head1 VERSION
 
-This document describes Lingua::Stem::Any v0.02.
+This document describes Lingua::Stem::Any v0.02_1.
 
 =head1 SYNOPSIS
 

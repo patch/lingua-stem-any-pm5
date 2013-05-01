@@ -1,5 +1,8 @@
 Revision history for Perl module Lingua::Stem::Any
 
+v0.02_1 XXX
+ - ...
+
 v0.02 2013-04-28
  - Required Moo v1.1.0 because it supports non-reference scalars as default
    values
