@@ -101,6 +101,15 @@ is used.
     # change source
     $stemmer->source('Lingua::Stem::UniNE');
 
+=item cache
+
+Boolean value specifying whether to cache the stem for each word.  This will
+increase performance when stemming the same word multiple times at the expense
+of increased memory consumption.  When enabled, the stems are cached for the
+life of the object or until the L</clear_cache> method is called.  The same
+cache is not shared among different languages, sources, or different instances
+of the stemmer object.
+
 =item casefold
 
 Boolean value specifying whether to apply Unicode casefolding to words before
@@ -165,13 +174,16 @@ Returns a list of supported source module names.
     # sources that support English
     @sources = $stemmer->sources('en');
 
+=item clear_cache
+
+Clears the stem cache for all languages and sources of this object instance when
+the L</cache> attribute is enabled.  Does not affect whether caching is enabled.
+
 =back
 
 =head1 TODO
 
 =over
-
-=item * optional stem caching
 
 =item * custom stemming exceptions
 
