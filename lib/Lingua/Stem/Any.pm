@@ -5,6 +5,7 @@ use utf8;
 use Moo;
 use Carp;
 use List::Util qw( first );
+use List::MoreUtils qw( any );
 use Unicode::CaseFold qw( fc );
 use Unicode::Normalize qw( NFC );
 
@@ -28,6 +29,17 @@ has source => (
         croak "Invalid source '$_[0]'" unless _is_source($_[0]);
     },
     trigger => 1,
+);
+
+has exceptions => (
+    is      => 'rw',
+    isa     => sub {
+        croak 'Exceptions must be a hashref'
+            if ref $_[0] ne 'HASH';
+        croak 'Exceptions must only include hashref values'
+            if any { ref $_ ne 'HASH' } values %{$_[0]};
+    },
+    default => sub { {} },
 );
 
 has normalize => (
@@ -154,9 +166,14 @@ sub _build_stemmer {
 
 sub _get_stem {
     my ($self, $word) = @_;
+    my $exceptions = $self->exceptions->{$self->language};
 
     $word = fc  $word if $self->casefold;
     $word = NFC $word if $self->normalize;
+
+    return $exceptions->{$word}
+        if $exceptions
+        && exists $exceptions->{$word};
 
     return $self->_stemmer->{stem}($word);
 }
@@ -316,6 +333,41 @@ is used.
 
     # change source
     $stemmer->source('Lingua::Stem::UniNE');
+
+=item exceptions
+
+Exceptions may be desired to bypass stemming for specific words and use
+predefined stems.  For example, the plural English word C<mice> will not stem to
+the singular word C<mouse> unless it is specified in the exception dictionary.
+Another example is that by default the word C<pants> will stem to C<pant> even
+though stemming is normally not desired in this example.  The exception
+dictionary can be provided as a hashref where the keys are language codes and
+the values are hashrefs of exceptions.
+
+    # instantiate stemmer object with exceptions
+    $stemmer = Lingua::Stem::Any->new(
+        language   => 'en',
+        exceptions => {
+            en => {
+                mice  => 'mouse',
+                pants => 'pants',
+            }
+        }
+    );
+
+    # add/change exceptions
+    $stemmer->exceptions(
+        en => {
+            mice  => 'mouse',
+            pants => 'pants',
+        }
+    );
+
+    # alternately...
+    $stemmer->exceptions->{en} = {
+        mice  => 'mouse',
+        pants => 'pants',
+    };
 
 =item casefold
 
