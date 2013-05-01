@@ -441,8 +441,6 @@ Returns a list of supported source module names.
 
 =item * optional stem caching
 
-=item * custom stemming exceptions
-
 =back
 
 =head1 SEE ALSO
