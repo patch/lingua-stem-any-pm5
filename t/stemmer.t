@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 186;
+use Test::More tests => 188;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -71,9 +71,6 @@ like $@, qr/Invalid language ''/, 'undef as language via write-accessor';
 eval { Lingua::Stem::Any->new(language => 'xx') };
 like $@, qr/Invalid language 'xx'/, 'invalid language via instantiator';
 
-eval { Lingua::Stem::Any->new() };
-like $@, qr/Missing required arguments: language/, 'instantiator w/o language';
-
 $stemmer = new_ok 'Lingua::Stem::Any', [
     language => 'de',
     source   => 'Lingua::Stem::Snowball',
@@ -123,6 +120,10 @@ $stemmer->source('Lingua::Stem');
 is $stemmer->source, 'Lingua::Stem', 'source explicitly changed';
 is $stemmer->stem('liquidize'), 'liquid', 'American stem with Lingua::Stem';
 is $stemmer->stem('liquidise'), 'liquid', 'Brittish stem with Lingua::Stem';
+
+$stemmer = new_ok 'Lingua::Stem::Any';
+is $stemmer->language, 'en', 'default language is English';
+is $stemmer->stem('fooing'), 'foo', 'default English stemming';
 
 my @tests = (
     [qw( bg това тов )],

@@ -11,14 +11,14 @@ use Unicode::Normalize qw( NFC );
 our $VERSION = '0.02_1';
 
 has language => (
-    is       => 'rw',
-    isa      => sub {
+    is      => 'rw',
+    isa     => sub {
         croak "Language is not defined"  unless defined $_[0];
         croak "Invalid language '$_[0]'" unless _is_language($_[0]);
     },
-    coerce   => sub { defined $_[0] ? lc $_[0] : '' },
-    trigger  => 1,
-    required => 1,
+    coerce  => sub { defined $_[0] ? lc $_[0] : '' },
+    trigger => 1,
+    default => 'en',
 );
 
 has source => (
@@ -45,7 +45,7 @@ has casefold => (
 has _stemmer => (
     is      => 'ro',
     builder => '_build_stemmer',
-    clearer => '_clear_stemmer',
+    clearer => 1,
     lazy    => 1,
 );
 
@@ -110,12 +110,22 @@ my @source_order = qw(
     Lingua::Stem
 );
 
+# functions
+
 sub _is_language { exists $languages{ $_[0] } }
 sub _is_source   { exists $sources{   $_[0] } }
 
+# methods
+
+sub BUILD {
+    my ($self) = @_;
+
+    $self->_trigger_language;
+}
+
 # the stemmer is cleared whenever a language or source is updated
 sub _trigger_language {
-    my $self = shift;
+    my ($self) = @_;
 
     $self->_clear_stemmer;
 
@@ -130,14 +140,14 @@ sub _trigger_language {
 }
 
 sub _trigger_source {
-    my $self = shift;
+    my ($self) = @_;
 
     $self->_clear_stemmer;
 }
 
 # the stemmer is built lazily on first use
 sub _build_stemmer {
-    my $self = shift;
+    my ($self) = @_;
 
     croak sprintf "Invalid source '%s' for language '%s'" => (
         $self->source, $self->language
@@ -292,8 +302,9 @@ always returned in lowercase when requested.
     # change language
     $stemmer->language($language);
 
-Country codes such as C<cz> for the Czech Republic are not supported, nor are
-IETF language tags such as C<pt-PT> or C<pt-BR>.
+The default language is C<en> (English).  Country codes such as C<cz> for the
+Czech Republic are not supported, nor are IETF language tags such as C<pt-PT> or
+C<pt-BR>.
 
 =item source
 

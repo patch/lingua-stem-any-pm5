@@ -76,8 +76,9 @@ always returned in lowercase when requested.
     # change language
     $stemmer->language($language);
 
-Country codes such as C<cz> for the Czech Republic are not supported, nor are
-IETF language tags such as C<pt-PT> or C<pt-BR>.
+The default language is C<en> (English).  Country codes such as C<cz> for the
+Czech Republic are not supported, nor are IETF language tags such as C<pt-PT> or
+C<pt-BR>.
 
 =item source
 
