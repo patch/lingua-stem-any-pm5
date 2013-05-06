@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 188;
+use Test::More tests => 163;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -19,6 +19,12 @@ my @langs = sort qw(
 my $langs = @langs;
 is_deeply [$stemmer->languages], \@langs, 'list languages';
 is scalar $stemmer->languages,    $langs, 'scalar languages';
+
+for my $lang (@langs) {
+	$stemmer->language($lang);
+	is $stemmer->language, $lang, "change language to $lang";
+}
+
 is_deeply [$stemmer->languages('Lingua::Stem::Snowball')], [qw(
     da de en es fi fr hu it la nl no pt ro ru sv tr
 )], 'list languages for source';
@@ -36,6 +42,7 @@ is_deeply [$stemmer->sources('en')], [qw(
 )], 'list sources for language';
 
 @words = @words_copy = qw( že dobře ještě );
+$stemmer->language('cs');
 is_deeply [$stemmer->stem(@words)], [qw( že dobř jesk )], 'list of words';
 is_deeply \@words, \@words_copy, 'not destructive on arrays';
 
@@ -177,7 +184,6 @@ for my $test (@tests) {
     my ($language, $word, $stem) = @$test;
 
     $stemmer->language($language);
-    is $stemmer->language, $language, "switch language to $language";
     is $stemmer->stem($word), $stem, "$language: $word stems to $stem";
 
     my @words = ($word) x 2;
