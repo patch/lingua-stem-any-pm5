@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 163;
+use Test::More tests => 166;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -21,8 +21,8 @@ is_deeply [$stemmer->languages], \@langs, 'list languages';
 is scalar $stemmer->languages,    $langs, 'scalar languages';
 
 for my $lang (@langs) {
-	$stemmer->language($lang);
-	is $stemmer->language, $lang, "change language to $lang";
+    $stemmer->language($lang);
+    is $stemmer->language, $lang, "change language to $lang";
 }
 
 is_deeply [$stemmer->languages('Lingua::Stem::Snowball')], [qw(
@@ -131,6 +131,10 @@ is $stemmer->stem('liquidise'), 'liquid', 'Brittish stem with Lingua::Stem';
 $stemmer = new_ok 'Lingua::Stem::Any';
 is $stemmer->language, 'en', 'default language is English';
 is $stemmer->stem('fooing'), 'foo', 'default English stemming';
+
+isa_ok $stemmer->language('de'), 'Lingua::Stem::Any';
+is $stemmer->language('nl')->language, 'nl', 'attribute setter chaining';
+is $stemmer->language('cs')->stem('ještě'), 'jesk', 'attribute setter chaining';
 
 my @tests = (
     [qw( bg това тов )],

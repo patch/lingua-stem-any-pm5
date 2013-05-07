@@ -10,36 +10,40 @@ use Unicode::Normalize qw( NFC );
 
 our $VERSION = '0.02_1';
 
-has language => (
-    is      => 'rw',
-    isa     => sub {
+has _language => (
+    is       => 'rw',
+    isa      => sub {
         croak "Language is not defined"  unless defined $_[0];
         croak "Invalid language '$_[0]'" unless _is_language($_[0]);
     },
-    coerce  => sub { defined $_[0] ? lc $_[0] : '' },
-    trigger => 1,
-    default => 'en',
+    coerce   => sub { defined $_[0] ? lc $_[0] : '' },
+    trigger  => \&_trigger_language,
+    default  => 'en',
+    init_arg => 'language',
 );
 
-has source => (
-    is      => 'rw',
-    isa     => sub {
+has _source => (
+    is       => 'rw',
+    isa      => sub {
         croak "Source is not defined"  unless defined $_[0];
         croak "Invalid source '$_[0]'" unless _is_source($_[0]);
     },
-    trigger => 1,
+    trigger  => \&_trigger_source,
+    init_arg => 'source',
 );
 
-has normalize => (
-    is      => 'rw',
-    coerce  => sub { !!$_[0] },
-    default => 1,
+has _normalize => (
+    is       => 'rw',
+    coerce   => sub { !!$_[0] },
+    default  => 1,
+    init_arg => 'normalize',
 );
 
-has casefold => (
-    is      => 'rw',
-    coerce  => sub { !!$_[0] },
-    default => 1,
+has _casefold => (
+    is       => 'rw',
+    coerce   => sub { !!$_[0] },
+    default  => 1,
+    init_arg => 'casefold',
 );
 
 has _stemmer => (
@@ -121,6 +125,34 @@ sub BUILD {
     my ($self) = @_;
 
     $self->_trigger_language;
+}
+
+sub language {
+    my $self = shift;
+    return $self->_language unless @_;
+    $self->_language(@_);
+    return $self;
+}
+
+sub source {
+    my $self = shift;
+    return $self->_source unless @_;
+    $self->_source(@_);
+    return $self;
+}
+
+sub normalize {
+    my $self = shift;
+    return $self->_normalize unless @_;
+    $self->_normalize(@_);
+    return $self;
+}
+
+sub casefold {
+    my $self = shift;
+    return $self->_casefold unless @_;
+    $self->_casefold(@_);
+    return $self;
 }
 
 # the stemmer is cleared whenever a language or source is updated
@@ -260,6 +292,10 @@ It will provide a default available source module when a language is requested
 but no source is requested.
 
 =head2 Attributes
+
+All attribute setting methods can be chained.
+
+    $stemmer->language($language)->stem($word);
 
 =over
 
