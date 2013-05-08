@@ -32,6 +32,13 @@ has _source => (
     init_arg => 'source',
 );
 
+has cache => (
+    is      => 'rw',
+    coerce  => sub { !!$_[0] },
+    default => 0,
+    trigger => 1,
+);
+
 has _normalize => (
     is       => 'rw',
     coerce   => sub { !!$_[0] },
@@ -55,6 +62,11 @@ has _stemmer => (
 
 has _stemmers => (
     is      => 'ro',
+    default => sub { {} },
+);
+
+has _cache => (
+    is      => 'rw',
     default => sub { {} },
 );
 
@@ -197,10 +209,23 @@ sub _build_stemmer {
 sub _get_stem {
     my ($self, $word) = @_;
 
+    return $word unless $word;
+
     $word = fc  $word if $self->casefold;
     $word = NFC $word if $self->normalize;
 
-    return $self->_stemmer->{stem}($word);
+    # stem without caching
+    return $self->_stemmer->{stem}($word)
+        unless $self->cache;
+
+    # get from cache
+    return $self->_cache->{$self->source}{$self->language}{$word}
+        if exists $self->_cache->{$self->source}{$self->language}{$word};
+
+    # stem and add to cache
+    return $self->_cache->{$self->source}{$self->language}{$word}
+         = $self->_stemmer->{stem}($word);
+
 }
 
 sub stem {
@@ -250,6 +275,20 @@ sub sources {
     return grep {
         $sources{$_} && $sources{$_}{languages}{$language}
     } @source_order;
+}
+
+sub clear_cache {
+    my ($self) = @_;
+
+    $self->_cache( {} );
+}
+
+sub _trigger_cache {
+    my ($self) = @_;
+
+    if ( !$self->cache ) {
+        $self->clear_cache;
+    }
 }
 
 1;
@@ -364,6 +403,15 @@ is used.
     # change source
     $stemmer->source('Lingua::Stem::UniNE');
 
+=item cache
+
+Boolean value specifying whether to cache the stem for each word.  This will
+increase performance when stemming the same word multiple times at the expense
+of increased memory consumption.  When enabled, the stems are cached for the
+life of the object or until the L</clear_cache> method is called.  The same
+cache is not shared among different languages, sources, or different instances
+of the stemmer object.
+
 =item casefold
 
 Boolean value specifying whether to apply Unicode casefolding to words before
@@ -428,13 +476,16 @@ Returns a list of supported source module names.
     # sources that support English
     @sources = $stemmer->sources('en');
 
+=item clear_cache
+
+Clears the stem cache for all languages and sources of this object instance when
+the L</cache> attribute is enabled.  Does not affect whether caching is enabled.
+
 =back
 
 =head1 TODO
 
 =over
-
-=item * optional stem caching
 
 =item * custom stemming exceptions
 
