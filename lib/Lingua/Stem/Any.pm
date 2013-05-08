@@ -32,11 +32,12 @@ has _source => (
     init_arg => 'source',
 );
 
-has cache => (
-    is      => 'rw',
-    coerce  => sub { !!$_[0] },
-    default => 0,
-    trigger => 1,
+has _cache => (
+    is       => 'rw',
+    coerce   => sub { !!$_[0] },
+    default  => 0,
+    trigger  => \&_trigger_cache,
+    init_arg => 'cache',
 );
 
 has _normalize => (
@@ -65,7 +66,7 @@ has _stemmers => (
     default => sub { {} },
 );
 
-has _cache => (
+has _cache_data => (
     is      => 'rw',
     default => sub { {} },
 );
@@ -153,6 +154,13 @@ sub source {
     return $self;
 }
 
+sub cache {
+    my $self = shift;
+    return $self->_cache unless @_;
+    $self->_cache(@_);
+    return $self;
+}
+
 sub normalize {
     my $self = shift;
     return $self->_normalize unless @_;
@@ -219,11 +227,11 @@ sub _get_stem {
         unless $self->cache;
 
     # get from cache
-    return $self->_cache->{$self->source}{$self->language}{$word}
-        if exists $self->_cache->{$self->source}{$self->language}{$word};
+    return $self->_cache_data->{$self->source}{$self->language}{$word}
+        if exists $self->_cache_data->{$self->source}{$self->language}{$word};
 
     # stem and add to cache
-    return $self->_cache->{$self->source}{$self->language}{$word}
+    return $self->_cache_data->{$self->source}{$self->language}{$word}
          = $self->_stemmer->{stem}($word);
 
 }
@@ -280,7 +288,7 @@ sub sources {
 sub clear_cache {
     my ($self) = @_;
 
-    $self->_cache( {} );
+    $self->_cache_data( {} );
 }
 
 sub _trigger_cache {
