@@ -5,6 +5,7 @@ use utf8;
 use Moo;
 use Carp;
 use List::Util qw( first );
+use List::MoreUtils qw( any );
 use Unicode::CaseFold qw( fc );
 use Unicode::Normalize qw( NFC );
 
@@ -38,6 +39,17 @@ has _cache => (
     default  => 0,
     trigger  => \&_trigger_cache,
     init_arg => 'cache',
+);
+
+has exceptions => (
+    is      => 'rw',
+    isa     => sub {
+        croak 'Exceptions must be a hashref'
+            if ref $_[0] ne 'HASH';
+        croak 'Exceptions must only include hashref values'
+            if any { ref $_ ne 'HASH' } values %{$_[0]};
+    },
+    default => sub { {} },
 );
 
 has _normalize => (
@@ -216,11 +228,17 @@ sub _build_stemmer {
 
 sub _get_stem {
     my ($self, $word) = @_;
+    my $exceptions = $self->exceptions->{$self->language};
 
     return $word unless $word;
 
     $word = fc  $word if $self->casefold;
     $word = NFC $word if $self->normalize;
+
+    # get from exceptions
+    return $exceptions->{$word}
+        if $exceptions
+        && exists $exceptions->{$word};
 
     # stem without caching
     return $self->_stemmer->{stem}($word)
@@ -233,7 +251,6 @@ sub _get_stem {
     # stem and add to cache
     return $self->_cache_data->{$self->source}{$self->language}{$word}
          = $self->_stemmer->{stem}($word);
-
 }
 
 sub stem {
@@ -420,6 +437,41 @@ life of the object or until the L</clear_cache> method is called.  The same
 cache is not shared among different languages, sources, or different instances
 of the stemmer object.
 
+=item exceptions
+
+Exceptions may be desired to bypass stemming for specific words and use
+predefined stems.  For example, the plural English word C<mice> will not stem to
+the singular word C<mouse> unless it is specified in the exception dictionary.
+Another example is that by default the word C<pants> will stem to C<pant> even
+though stemming is normally not desired in this example.  The exception
+dictionary can be provided as a hashref where the keys are language codes and
+the values are hashrefs of exceptions.
+
+    # instantiate stemmer object with exceptions
+    $stemmer = Lingua::Stem::Any->new(
+        language   => 'en',
+        exceptions => {
+            en => {
+                mice  => 'mouse',
+                pants => 'pants',
+            }
+        }
+    );
+
+    # add/change exceptions
+    $stemmer->exceptions(
+        en => {
+            mice  => 'mouse',
+            pants => 'pants',
+        }
+    );
+
+    # alternately...
+    $stemmer->exceptions->{en} = {
+        mice  => 'mouse',
+        pants => 'pants',
+    };
+
 =item casefold
 
 Boolean value specifying whether to apply Unicode casefolding to words before
@@ -488,14 +540,6 @@ Returns a list of supported source module names.
 
 Clears the stem cache for all languages and sources of this object instance when
 the L</cache> attribute is enabled.  Does not affect whether caching is enabled.
-
-=back
-
-=head1 TODO
-
-=over
-
-=item * custom stemming exceptions
 
 =back
 

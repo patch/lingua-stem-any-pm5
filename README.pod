@@ -115,6 +115,41 @@ life of the object or until the L</clear_cache> method is called.  The same
 cache is not shared among different languages, sources, or different instances
 of the stemmer object.
 
+=item exceptions
+
+Exceptions may be desired to bypass stemming for specific words and use
+predefined stems.  For example, the plural English word C<mice> will not stem to
+the singular word C<mouse> unless it is specified in the exception dictionary.
+Another example is that by default the word C<pants> will stem to C<pant> even
+though stemming is normally not desired in this example.  The exception
+dictionary can be provided as a hashref where the keys are language codes and
+the values are hashrefs of exceptions.
+
+    # instantiate stemmer object with exceptions
+    $stemmer = Lingua::Stem::Any->new(
+        language   => 'en',
+        exceptions => {
+            en => {
+                mice  => 'mouse',
+                pants => 'pants',
+            }
+        }
+    );
+
+    # add/change exceptions
+    $stemmer->exceptions(
+        en => {
+            mice  => 'mouse',
+            pants => 'pants',
+        }
+    );
+
+    # alternately...
+    $stemmer->exceptions->{en} = {
+        mice  => 'mouse',
+        pants => 'pants',
+    };
+
 =item casefold
 
 Boolean value specifying whether to apply Unicode casefolding to words before
@@ -183,14 +218,6 @@ Returns a list of supported source module names.
 
 Clears the stem cache for all languages and sources of this object instance when
 the L</cache> attribute is enabled.  Does not affect whether caching is enabled.
-
-=back
-
-=head1 TODO
-
-=over
-
-=item * custom stemming exceptions
 
 =back
 

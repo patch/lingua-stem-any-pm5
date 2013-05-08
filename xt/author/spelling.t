@@ -13,6 +13,7 @@ __DATA__
 casefold
 casefolding
 CPAN
+hashrefs
 IETF
 Shutterstock
 stemmer
