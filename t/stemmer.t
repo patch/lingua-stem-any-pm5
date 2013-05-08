@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 166;
+use Test::More tests => 167;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -133,8 +133,9 @@ is $stemmer->language, 'en', 'default language is English';
 is $stemmer->stem('fooing'), 'foo', 'default English stemming';
 
 isa_ok $stemmer->language('de'), 'Lingua::Stem::Any';
-is $stemmer->language('nl')->language, 'nl', 'attribute setter chaining';
-is $stemmer->language('cs')->stem('ještě'), 'jesk', 'attribute setter chaining';
+is $stemmer->language('cs')->stem('ještě'), 'jesk', 'setter chaining';
+is $stemmer->language('nl')->language, 'nl', 'setter chaining';
+is $stemmer->source('Lingua::Stem')->source, 'Lingua::Stem', 'setter chaining';
 
 my @tests = (
     [qw( bg това тов )],

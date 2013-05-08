@@ -293,9 +293,9 @@ but no source is requested.
 
 =head2 Attributes
 
-All attribute setting methods can be chained.
+All attribute-setting methods can be chained.
 
-    $stemmer->language($language)->stem($word);
+    $stem = $stemmer->language($language)->stem($word);
 
 =over
 
