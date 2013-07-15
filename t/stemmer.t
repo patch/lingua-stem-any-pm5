@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 167;
+use Test::More tests => 171;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -55,6 +55,16 @@ is_deeply [$stemmer->stem('prosím')], ['pro'], 'word in list context';
 is_deeply [$stemmer->stem()],         [],      'empty list in list context';
 is scalar $stemmer->stem('prosím'),   'pro',   'word in scalar context';
 is scalar $stemmer->stem(),           undef,   'empty list in scalar context';
+
+SKIP: {
+    skip 'aggressive attribute NYI', 4;
+
+    ok !$stemmer->aggressive,               'light stemmer by default';
+    is $stemmer->stem('všechno'), 'všechn', 'light stemmer';
+    $stemmer->aggressive(1);
+    ok $stemmer->aggressive,                'aggressive stemmer explicitly set';
+    is $stemmer->stem('všechno'), 'všech',  'aggressive stemmer';
+}
 
 is $stemmer->stem('работа'), 'работа', 'only stem for current language';
 
