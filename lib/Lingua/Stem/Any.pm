@@ -3,8 +3,7 @@ package Lingua::Stem::Any;
 use v5.8.1;
 use utf8;
 use Carp;
-use List::Util qw( first );
-use List::MoreUtils qw( any );
+use List::Util qw( any first );
 use Unicode::CaseFold qw( fc );
 use Unicode::Normalize qw( NFC );
 
