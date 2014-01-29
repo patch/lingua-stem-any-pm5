@@ -4,18 +4,20 @@ use Module::Build;
 
 my $builder = Module::Build->new(
     module_name   => 'Lingua::Stem::Any',
-    license       => 'perl',
+    license       => 'Perl_5',
     create_readme => 1,
     configure_requires => {
-        'Module::Build' => '0.36',
+        'Module::Build' => '0.3622',
     },
     build_requires => {
+        'open'       => 0,
         'English'    => 0,
         'Pod::Man'   => '2.04',
         'Test::More' => '0.82',
     },
     requires => {
-        'perl'                   => '5.6.0',
+        'perl'                   => '5.8.1',
+        'namespace::clean'       => 0,
         'strict'                 => 0,
         'utf8'                   => 0,
         'warnings'               => 0,

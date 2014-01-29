@@ -1,13 +1,15 @@
 package Lingua::Stem::Any;
 
-use v5.6;
+use v5.8.1;
 use utf8;
-use Moo;
 use Carp;
 use List::Util qw( first );
 use List::MoreUtils qw( any );
 use Unicode::CaseFold qw( fc );
 use Unicode::Normalize qw( NFC );
+
+use Moo;
+use namespace::clean;
 
 our $VERSION = '0.02_1';
 
@@ -410,7 +412,7 @@ always returned in lowercase when requested.
     # change language
     $stemmer->language($language);
 
-The default language is C<en> (English).  Country codes such as C<cz> for the
+The default language is C<en> (English). Country codes such as C<cz> for the
 Czech Republic are not supported, nor are IETF language tags such as C<pt-PT> or
 C<pt-BR>.
 
@@ -426,7 +428,7 @@ The following source modules are currently supported.
     │ Lingua::Stem           │ da de en fr gl it no pt ru sv                │
     └────────────────────────┴──────────────────────────────────────────────┘
 
-A module name is used to specify the source.  If no source is specified, the
+A module name is used to specify the source. If no source is specified, the
 first available source in the above list with support for the current language
 is used.
 
@@ -438,20 +440,20 @@ is used.
 
 =item cache
 
-Boolean value specifying whether to cache the stem for each word.  This will
+Boolean value specifying whether to cache the stem for each word. This will
 increase performance when stemming the same word multiple times at the expense
-of increased memory consumption.  When enabled, the stems are cached for the
-life of the object or until the L</clear_cache> method is called.  The same
-cache is not shared among different languages, sources, or different instances
-of the stemmer object.
+of increased memory consumption. When enabled, the stems are cached for the life
+of the object or until the L</clear_cache> method is called. The same cache is
+not shared among different languages, sources, or different instances of the
+stemmer object.
 
 =item exceptions
 
 Exceptions may be desired to bypass stemming for specific words and use
-predefined stems.  For example, the plural English word C<mice> will not stem to
+predefined stems. For example, the plural English word C<mice> will not stem to
 the singular word C<mouse> unless it is specified in the exception dictionary.
 Another example is that by default the word C<pants> will stem to C<pant> even
-though stemming is normally not desired in this example.  The exception
+though stemming is normally not desired in this example. The exception
 dictionary can be provided as a hashref where the keys are language codes and
 the values are hashrefs of exceptions.
 
@@ -483,13 +485,13 @@ the values are hashrefs of exceptions.
 =item casefold
 
 Boolean value specifying whether to apply Unicode casefolding to words before
-stemming them.  This is enabled by default and is performed before normalization
+stemming them. This is enabled by default and is performed before normalization
 when also enabled.
 
 =item normalize
 
 Boolean value specifying whether to apply Unicode NFC normalization to words
-before stemming them.  This is enabled by default and is performed after
+before stemming them. This is enabled by default and is performed after
 casefolding when also enabled.
 
 =back
@@ -500,9 +502,9 @@ casefolding when also enabled.
 
 =item stem
 
-Accepts a list of strings, stems each string, and returns a list of stems.  The
+Accepts a list of strings, stems each string, and returns a list of stems. The
 list returned will always have the same number of elements in the same order as
-the list provided.  When no stemming rules apply to a word, the original word is
+the list provided. When no stemming rules apply to a word, the original word is
 returned.
 
     @stems = $stemmer->stem(@words);
@@ -511,7 +513,7 @@ returned.
     $stem = $stemmer->stem($word);
 
 The words should be provided as character strings and the stems are returned as
-character strings.  Byte strings in arbitrary character encodings are not
+character strings. Byte strings in arbitrary character encodings are not
 supported.
 
 =item stem_in_place
@@ -522,7 +524,7 @@ resulting stems.
     $stemmer->stem_in_place(\@words);
 
 This method is provided for potential optimization when a large array of words
-is to be stemmed.  The return value is not defined.
+is to be stemmed. The return value is not defined.
 
 =item languages
 
@@ -547,7 +549,7 @@ Returns a list of supported source module names.
 =item clear_cache
 
 Clears the stem cache for all languages and sources of this object instance when
-the L</cache> attribute is enabled.  Does not affect whether caching is enabled.
+the L</cache> attribute is enabled. Does not affect whether caching is enabled.
 
 =back
 
@@ -555,20 +557,17 @@ the L</cache> attribute is enabled.  Does not affect whether caching is enabled.
 
 L<Lingua::Stem::Snowball>, L<Lingua::Stem::UniNE>, L<Lingua::Stem>
 
-=head1 ACKNOWLEDGEMENTS
-
-This module is brought to you by L<Shutterstock|http://www.shutterstock.com/>
-(L<@ShutterTech|https://twitter.com/ShutterTech>).  Additional open source
-projects from Shutterstock can be found at
-L<code.shutterstock.com|http://code.shutterstock.com/>.
-
 =head1 AUTHOR
 
 Nick Patch <patch@cpan.org>
 
+This project is brought to you by L<Shutterstock|http://www.shutterstock.com/>.
+Additional open source projects from Shutterstock can be found at
+L<code.shutterstock.com|http://code.shutterstock.com/>.
+
 =head1 COPYRIGHT AND LICENSE
 
-© 2013 Nick Patch
+© 2013–2014 Shutterstock, Inc.
 
 This library is free software; you can redistribute it and/or modify it under
 the same terms as Perl itself.
