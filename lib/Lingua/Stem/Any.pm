@@ -105,7 +105,7 @@ my %sources = (
     },
     'Lingua::Stem::UniNE' => {
         languages => {map { $_ => 1 } qw(
-            bg cs fa
+            bg cs de fa
         )},
         builder => sub {
             my $language = shift;
@@ -422,8 +422,8 @@ The following source modules are currently supported.
     ┌────────────────────────┬──────────────────────────────────────────────┐
     │ Module                 │ Languages                                    │
     ├────────────────────────┼──────────────────────────────────────────────┤
-    │ Lingua::Stem::Snowball │ da nl en fi fr de hu it no pt ro ru es sv tr │
-    │ Lingua::Stem::UniNE    │ bg cs fa                                     │
+    │ Lingua::Stem::Snowball │ da de en es fi fr hu it nl no pt ro ru sv tr │
+    │ Lingua::Stem::UniNE    │ bg cs de fa                                  │
     │ Lingua::Stem           │ da de en fr gl it no pt ru sv                │
     └────────────────────────┴──────────────────────────────────────────────┘
 
