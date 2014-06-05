@@ -131,6 +131,20 @@ my %sources = (
             };
         },
     },
+    'Lingua::Stem::Patch' => {
+        languages => {map { $_ => 1 } qw(
+            eo io
+        )},
+        builder => sub {
+            my $language = shift;
+            require Lingua::Stem::Patch;
+            my $stemmer = Lingua::Stem::Patch->new(language => $language);
+            return {
+                stem     => sub { $stemmer->stem(shift) },
+                language => sub { $stemmer->language(shift) },
+            };
+        },
+    },
 );
 
 my %languages = map { %{$_->{languages}} } values %sources;
@@ -139,6 +153,7 @@ my @source_order = qw(
     Lingua::Stem::Snowball
     Lingua::Stem::UniNE
     Lingua::Stem
+    Lingua::Stem::Patch
 );
 
 # functions
@@ -382,11 +397,13 @@ The following language codes are currently supported.
     │ Danish     │ da │
     │ Dutch      │ nl │
     │ English    │ en │
+    │ Esperanto  │ eo │
     │ Finnish    │ fi │
     │ French     │ fr │
     │ Galician   │ gl │
     │ German     │ de │
     │ Hungarian  │ hu │
+    │ Ido        │ io │
     │ Italian    │ it │
     │ Latin      │ la │
     │ Norwegian  │ no │
@@ -425,6 +442,7 @@ The following source modules are currently supported.
     │ Lingua::Stem::Snowball │ da de en es fi fr hu it nl no pt ro ru sv tr │
     │ Lingua::Stem::UniNE    │ bg cs de fa                                  │
     │ Lingua::Stem           │ da de en fr gl it no pt ru sv                │
+    │ Lingua::Stem::Patch    │ eo io                                        │
     └────────────────────────┴──────────────────────────────────────────────┘
 
 A module name is used to specify the source. If no source is specified, the
@@ -554,7 +572,7 @@ the L</cache> attribute is enabled. Does not affect whether caching is enabled.
 
 =head1 SEE ALSO
 
-L<Lingua::Stem::Snowball>, L<Lingua::Stem::UniNE>, L<Lingua::Stem>
+L<Lingua::Stem::Snowball>, L<Lingua::Stem::UniNE>, L<Lingua::Stem>, L<Lingua::Stem::Patch>
 
 =head1 AUTHOR
 

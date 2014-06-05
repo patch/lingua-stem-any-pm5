@@ -51,11 +51,13 @@ $stem = $stemmer->language($language)->stem($word);
         │ Danish     │ da │
         │ Dutch      │ nl │
         │ English    │ en │
+        │ Esperanto  │ eo │
         │ Finnish    │ fi │
         │ French     │ fr │
         │ Galician   │ gl │
         │ German     │ de │
         │ Hungarian  │ hu │
+        │ Ido        │ io │
         │ Italian    │ it │
         │ Latin      │ la │
         │ Norwegian  │ no │
@@ -96,6 +98,7 @@ $stem = $stemmer->language($language)->stem($word);
         │ Lingua::Stem::Snowball │ da de en es fi fr hu it nl no pt ro ru sv tr │
         │ Lingua::Stem::UniNE    │ bg cs de fa                                  │
         │ Lingua::Stem           │ da de en fr gl it no pt ru sv                │
+        │ Lingua::Stem::Patch    │ eo io                                        │
         └────────────────────────┴──────────────────────────────────────────────┘
 
     A module name is used to specify the source. If no source is specified, the
@@ -231,7 +234,7 @@ $stem = $stemmer->language($language)->stem($word);
 
 # SEE ALSO
 
-[Lingua::Stem::Snowball](https://metacpan.org/pod/Lingua::Stem::Snowball), [Lingua::Stem::UniNE](https://metacpan.org/pod/Lingua::Stem::UniNE), [Lingua::Stem](https://metacpan.org/pod/Lingua::Stem)
+[Lingua::Stem::Snowball](https://metacpan.org/pod/Lingua::Stem::Snowball), [Lingua::Stem::UniNE](https://metacpan.org/pod/Lingua::Stem::UniNE), [Lingua::Stem](https://metacpan.org/pod/Lingua::Stem), [Lingua::Stem::Patch](https://metacpan.org/pod/Lingua::Stem::Patch)
 
 # AUTHOR
 
