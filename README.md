@@ -8,7 +8,7 @@ Lingua::Stem::Any - Unified interface to any stemmer on CPAN
 
 # VERSION
 
-This document describes Lingua::Stem::Any v0.02\_1.
+This document describes Lingua::Stem::Any v0.03.
 
 # SYNOPSIS
 
@@ -122,7 +122,7 @@ $stem = $stemmer->language($language)->stem($word);
     Boolean value specifying whether to cache the stem for each word. This will
     increase performance when stemming the same word multiple times at the expense
     of increased memory consumption. When enabled, the stems are cached for the life
-    of the object or until the L</clear_cache> method is called. The same cache is
+    of the object or until the ["clear\_cache"](#clear_cache) method is called. The same cache is
     not shared among different languages, sources, or different instances of the
     stemmer object.
 
