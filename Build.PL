@@ -24,6 +24,7 @@ my $builder = Module::Build->new(
         'warnings'               => 0,
         'Carp'                   => 0,
         'Lingua::Stem'           => '0.80',
+        'Lingua::Stem::Patch'    => 0,
         'Lingua::Stem::Snowball' => '0.95',
         'Lingua::Stem::UniNE'    => '0.06',
         'List::Util'             => '1.33',
