@@ -1,5 +1,5 @@
-[![Build status](https://travis-ci.org/any/lingua-stem-any-pm5.png)](https://travis-ci.org/any/lingua-stem-any-pm5)
-[![Coverage status](https://coveralls.io/repos/any/lingua-stem-any-pm5/badge.png)](https://coveralls.io/r/any/lingua-stem-any-pm5)
+[![Build status](https://travis-ci.org/patch/lingua-stem-any-pm5.png)](https://travis-ci.org/patch/lingua-stem-any-pm5)
+[![Coverage status](https://coveralls.io/repos/patch/lingua-stem-any-pm5/badge.png)](https://coveralls.io/r/patch/lingua-stem-any-pm5)
 [![CPAN version](https://badge.fury.io/pl/Lingua-Stem-Any.png)](http://badge.fury.io/pl/Lingua-Stem-Any)
 
 # NAME
