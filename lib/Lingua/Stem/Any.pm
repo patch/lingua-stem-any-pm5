@@ -42,16 +42,15 @@ has _cache => (
     init_arg => 'cache',
 );
 
-has _exceptions => (
-    is       => 'rw',
-    isa      => sub {
+has exceptions => (
+    is      => 'rw',
+    isa     => sub {
         croak 'Exceptions must be a hashref'
             if ref $_[0] ne 'HASH';
         croak 'Exceptions must only include hashref values'
             if any { ref $_ ne 'HASH' } values %{$_[0]};
     },
-    default  => sub { {} },
-    init_arg => 'exceptions',
+    default => sub { {} },
 );
 
 has _normalize => (
@@ -187,13 +186,6 @@ sub cache {
     my $self = shift;
     return $self->_cache unless @_;
     $self->_cache(@_);
-    return $self;
-}
-
-sub exceptions {
-    my $self = shift;
-    return $self->_exceptions unless @_;
-    $self->_exceptions(@_);
     return $self;
 }
 
