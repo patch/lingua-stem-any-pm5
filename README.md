@@ -39,12 +39,6 @@ but no source is requested.
 
 ## Attributes
 
-All attribute setting methods can be chained.
-
-```perl
-$stemmer->language($language)->stem($word);
-```
-
 - language
 
     The following language codes are currently supported.
