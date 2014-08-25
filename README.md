@@ -39,10 +39,10 @@ but no source is requested.
 
 ## Attributes
 
-All attribute-setting methods can be chained.
+All attribute setting methods can be chained.
 
 ```perl
-$stem = $stemmer->language($language)->stem($word);
+$stemmer->language($language)->stem($word);
 ```
 
 - language
