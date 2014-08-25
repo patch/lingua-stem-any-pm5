@@ -10,7 +10,7 @@ use Unicode::Normalize qw( NFC );
 use Moo;
 use namespace::clean;
 
-our $VERSION = '0.03';
+our $VERSION = '0.03_1';
 
 has _language => (
     is       => 'rw',
@@ -352,7 +352,7 @@ Lingua::Stem::Any - Unified interface to any stemmer on CPAN
 
 =head1 VERSION
 
-This document describes Lingua::Stem::Any v0.03.
+This document describes Lingua::Stem::Any v0.03_1.
 
 =head1 SYNOPSIS
 
