@@ -2,7 +2,7 @@ use utf8;
 use strict;
 use warnings;
 use open qw( :encoding(UTF-8) :std );
-use Test::More tests => 169;
+use Test::More tests => 173;
 use Lingua::Stem::Any;
 
 my ($stemmer, @words, @words_copy);
@@ -84,7 +84,7 @@ eval { $stemmer->language('') };
 like $@, qr/Invalid language ''/, 'empty string as language via write-accessor';
 
 eval { $stemmer->language(undef) };
-like $@, qr/Invalid language ''/, 'undef as language via write-accessor';
+like $@, qr/Language is not defined/, 'undef as language via write-accessor';
 
 eval { Lingua::Stem::Any->new(language => 'xx') };
 like $@, qr/Invalid language 'xx'/, 'invalid language via instantiator';
@@ -142,6 +142,14 @@ is $stemmer->stem('liquidise'), 'liquid', 'Brittish stem with Lingua::Stem';
 $stemmer = new_ok 'Lingua::Stem::Any';
 is $stemmer->language, 'en', 'default language is English';
 is $stemmer->stem('fooing'), 'foo', 'default English stemming';
+
+$stemmer->language('nb');
+is $stemmer->language, 'no', 'Norwegian Bokmål (nb) coerced to Norwegian (no)';
+is $stemmer->stem('være'), 'vær', 'Norwegian (no) stemming after setting Norwegian Bokmål (nb)';
+
+$stemmer->language('nn');
+is $stemmer->language, 'no', 'Norwegian Nynorsk (nn) coerced to Norwegian (no)';
+is $stemmer->stem('være'), 'vær', 'Norwegian (no) stemming after setting Norwegian Nynorsk (nn)';
 
 my @tests = (
     [qw( bg това тов )],

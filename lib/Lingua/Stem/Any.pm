@@ -12,13 +12,18 @@ use namespace::clean;
 
 our $VERSION = '0.03_1';
 
+my %language_alias = (
+    nb => 'no',
+    nn => 'no',
+);
+
 has language => (
     is      => 'rw',
     isa     => sub {
         croak "Language is not defined"  unless defined $_[0];
         croak "Invalid language '$_[0]'" unless _is_language($_[0]);
     },
-    coerce  => sub { defined $_[0] ? lc $_[0] : '' },
+    coerce  => sub { $_[0] && ($language_alias{lc $_[0]} || lc $_[0]) },
     trigger => 1,
     default => 'en',
 );
@@ -376,9 +381,11 @@ always returned in lowercase when requested.
     # change language
     $stemmer->language($language);
 
-The default language is C<en> (English). Country codes such as C<cz> for the
-Czech Republic are not supported, nor are IETF language tags such as C<pt-PT> or
-C<pt-BR>.
+The default language is C<en> (English). The values C<nb> (Norwegian Bokmål)
+and C<nn> (Norwegian Nynorsk) are aliases for C<no> (Norwegian). Country codes
+such as C<CZ> for the Czech Republic are not supported, as opposed to C<cs> for
+the Czech language, nor are full IETF language tags or Unicode locale
+identifiers such as C<pt-PT> or C<pt-BR>.
 
 =item source
 

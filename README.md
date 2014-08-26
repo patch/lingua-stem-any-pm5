@@ -82,9 +82,11 @@ but no source is requested.
     $stemmer->language($language);
     ```
 
-    The default language is `en` (English). Country codes such as `cz` for the
-    Czech Republic are not supported, nor are IETF language tags such as `pt-PT` or
-    `pt-BR`.
+    The default language is `en` (English). The values `nb` (Norwegian Bokmål)
+    and `nn` (Norwegian Nynorsk) are aliases for `no` (Norwegian). Country codes
+    such as `CZ` for the Czech Republic are not supported, as opposed to `cs` for
+    the Czech language, nor are full IETF language tags or Unicode locale
+    identifiers such as `pt-PT` or `pt_BR`.
 
 - source
 
