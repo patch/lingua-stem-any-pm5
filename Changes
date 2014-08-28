@@ -1,6 +1,6 @@
 Revision history for Perl module Lingua::Stem::Any
 
-v0.04 2014-08-27
+0.04 2014-08-27
  - Added `nb` (Norwegian Bokmål) and `nn` (Norwegian Nynorsk) as aliases for
    `no` (Norwegian) [issue #3]
  - Removed attribute chaining, which was accidentally released in v0.04 but was
@@ -10,7 +10,7 @@ v0.04 2014-08-27
    to clobber `$_` due to its use of the `charnames` pragma which uses the
    previously buggy `re` pragma [issue #7]
 
-v0.03 2014-06-05
+0.03 2014-06-05
  - Increased Perl version required from v5.6.0 to v5.8.1
  - Set the `language` attribute default value to `en` (English), which was
    previosly undefined by default yet required
@@ -25,10 +25,10 @@ v0.03 2014-06-05
  - Integrated Travis CI, Devel::Cover, and Coveralls with GitHub repo [issue #4],
    [issue #5]
 
-v0.02 2013-04-28
+0.02 2013-04-28
  - Required Moo v1.1.0 because it supports non-reference scalars as default
    values
 
-v0.01 2013-04-26
+0.01 2013-04-26
  - First release
  - Sources supported: Lingua::Stem::Snowball, Lingua::Stem::UniNE, Lingua::Stem
