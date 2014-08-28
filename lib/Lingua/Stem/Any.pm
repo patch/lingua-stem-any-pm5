@@ -10,7 +10,7 @@ use Unicode::Normalize qw( NFC );
 use Moo;
 use namespace::clean;
 
-our $VERSION = '0.03_1';
+our $VERSION = '0.04';
 
 my %language_alias = (
     nb => 'no',
@@ -309,7 +309,7 @@ Lingua::Stem::Any - Unified interface to any stemmer on CPAN
 
 =head1 VERSION
 
-This document describes Lingua::Stem::Any v0.03_1.
+This document describes Lingua::Stem::Any v0.04.
 
 =head1 SYNOPSIS
 
