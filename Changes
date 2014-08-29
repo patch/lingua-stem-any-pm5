@@ -1,5 +1,9 @@
 Revision history for Perl module Lingua::Stem::Any
 
+0.05 2014-08-29
+ - Added support for Polish `pl` stemmer (first on CPAN) from
+   Lingua::Stem::Patch
+
 0.04 2014-08-27
  - Added `nb` (Norwegian Bokmål) and `nn` (Norwegian Nynorsk) as aliases for
    `no` (Norwegian) [issue #3]
