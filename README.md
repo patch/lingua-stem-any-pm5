@@ -60,6 +60,7 @@ but no source is requested.
         │ Latin      │ la │
         │ Norwegian  │ no │
         │ Persian    │ fa │
+        │ Polish     │ pl │
         │ Portuguese │ pt │
         │ Romanian   │ ro │
         │ Russian    │ ru │
@@ -98,7 +99,7 @@ but no source is requested.
         │ Lingua::Stem::Snowball │ da de en es fi fr hu it nl no pt ro ru sv tr │
         │ Lingua::Stem::UniNE    │ bg cs de fa                                  │
         │ Lingua::Stem           │ da de en fr gl it no pt ru sv                │
-        │ Lingua::Stem::Patch    │ eo io                                        │
+        │ Lingua::Stem::Patch    │ eo io pl                                     │
         └────────────────────────┴──────────────────────────────────────────────┘
 
     A module name is used to specify the source. If no source is specified, the
